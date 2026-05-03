@@ -241,4 +241,4 @@ For questions or issues:
 
 **Made with ❤️ for older adults and physical therapists worldwide.**
 
-Last updated: May 2025
+Last updated: May 2026
