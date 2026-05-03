@@ -9,13 +9,13 @@
     <title>肩頸復健指南：影音教學版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { font-size: 16px; }
+        html { font-size: 18px; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
             background-color: #FDFBF8;
             color: #4A4A4A;
             scroll-behavior: smooth;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         /* Utility classes */
@@ -75,17 +75,17 @@
             text-align: center;
         }
         .hero h2 {
-            font-size: clamp(1.75rem, 5vw, 3rem);
+            font-size: clamp(2rem, 6vw, 3.5rem);
             font-weight: 700;
             margin-bottom: 1rem;
             color: #333;
         }
         .hero p {
-            font-size: 1rem;
+            font-size: 1.125rem;
             color: #666;
             max-width: 32rem;
             margin: 0 auto 1.5rem;
-            line-height: 1.7;
+            line-height: 1.8;
         }
         .button-group {
             display: flex;
@@ -95,16 +95,16 @@
             margin-bottom: 2rem;
         }
         .btn {
-            padding: 0.75rem 2rem;
+            padding: 0.875rem 2.5rem;
             border-radius: 0.75rem;
             font-weight: 700;
             text-decoration: none;
             border: none;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.0625rem;
             transition: all 0.2s;
             touch-action: manipulation;
-            min-height: 44px;
+            min-height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -166,7 +166,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .safety-box h2 {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: #DC2626;
             margin-bottom: 1.5rem;
@@ -255,9 +255,10 @@
             display: block;
             margin-bottom: 0.25rem;
             color: #1F2937;
+            font-size: 1.0625rem;
         }
         .checkbox-group .label-subtext {
-            font-size: 0.875rem;
+            font-size: 0.9375rem;
             color: #6B7280;
         }
         .result-box {
@@ -305,13 +306,14 @@
             margin-bottom: 2rem;
         }
         .section-header h2 {
-            font-size: 1.75rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #333;
             margin-bottom: 0.5rem;
         }
         .section-header p {
             color: #6B7280;
+            font-size: 1rem;
         }
         .filter-group {
             display: flex;
@@ -383,14 +385,14 @@
             margin-bottom: 0.75rem;
         }
         .exercise-card h3 {
-            font-size: 1.25rem;
+            font-size: 1.375rem;
             font-weight: 700;
             color: #1F2937;
             margin-bottom: 0.5rem;
         }
         .exercise-card p {
             color: #6B7280;
-            font-size: 0.875rem;
+            font-size: 0.9375rem;
         }
         .video-indicator {
             display: flex;
@@ -469,7 +471,7 @@
             margin-bottom: 1rem;
         }
         .modal-header h2 {
-            font-size: 1.5rem;
+            font-size: 1.6875rem;
             font-weight: 700;
             color: #1F2937;
         }
@@ -726,6 +728,13 @@
                                     <span class="label-subtext">伴隨發燒、頭暈、噁心或近期嚴重外傷史</span>
                                 </div>
                             </label>
+                            <label class="checkbox-group">
+                                <input type="checkbox" class="red-flag">
+                                <div>
+                                    <span class="label-text">無</span>
+                                    <span class="label-subtext">我沒有上述任何症狀，可以開始運動</span>
+                                </div>
+                            </label>
                             <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="checkAssessment()">確認評估結果</button>
                         </div>
 
@@ -790,7 +799,7 @@
 
     <footer>
         <p style="color: white; font-weight: 500;">專業物理治療資訊彙整 ‧ 影音教學輔助 ‧ 安全首位</p>
-        <p class="copyright">&copy; 2025 肩頸復健中心. 此內容僅供教育參考，不具醫療診斷效力。</p>
+        <p class="copyright">&copy; 2026 肩頸復健中心. 此內容僅供教育參考，不具醫療診斷效力。</p>
     </footer>
 
     <!-- Modal -->
@@ -930,7 +939,17 @@
 
         // Assessment
         function checkAssessment() {
-            const flags = document.querySelectorAll('.red-flag:checked').length;
+            // Get all checkboxes except the last one (which is "無")
+            const allFlags = document.querySelectorAll('.red-flag');
+            let warningCount = 0;
+            
+            // Count only the first 3 symptoms (index 0-2), not the "無" option (index 3)
+            for (let i = 0; i < 3; i++) {
+                if (allFlags[i].checked) {
+                    warningCount++;
+                }
+            }
+            
             const stepDiv = document.getElementById('quiz-step');
             const resultDiv = document.getElementById('quiz-result');
             const resultText = document.getElementById('result-text');
@@ -938,7 +957,7 @@
             stepDiv.style.display = 'none';
             resultDiv.classList.add('show');
 
-            if (flags > 0) {
+            if (warningCount > 0) {
                 resultDiv.classList.remove('success');
                 resultDiv.classList.add('danger');
                 resultText.innerHTML = `
