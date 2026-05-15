@@ -561,6 +561,101 @@
         }
     </style>
 </head>
+
+<!-- =====================================================================
+     EXERCISE DATA
+     To add a new exercise: copy any block below, increment the id,
+     set type to "伸展" | "肌力" | "放鬆", fill in the fields, save.
+     The UI (grid, filter chips, modal) updates automatically.
+     videoUrl: use a YouTube search URL — avoids broken embed IDs.
+     ===================================================================== -->
+<script>
+const EXERCISES = [
+    {
+        id: 1,
+        title: "上斜方肌伸展",
+        type: "伸展",
+        desc: "放鬆緊繃的肩頸交界處。",
+        detail: "這動作能有效緩解因久坐導致的「聳肩」問題。",
+        steps: [
+            "坐姿挺胸，右手抓住椅子邊緣固定肩膀",
+            "頭緩慢向左側傾斜，左手可輕輕輔助",
+            "維持20秒，重複3次",
+            "換邊操作"
+        ],
+        videoUrl: "https://www.youtube.com/results?search_query=%E4%B8%8A%E6%96%9C%E6%96%B9%E8%82%8C%E4%BC%B8%E5%B1%95+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
+    },
+    {
+        id: 2,
+        title: "頸椎等長收縮",
+        type: "肌力",
+        desc: "增加頸椎穩定性，不產生關節負擔。",
+        detail: "適合初期疼痛期使用，能建立肌肉基礎力量。",
+        steps: [
+            "手掌抵住額頭，頭向前用力但手掌擋住",
+            "頸部肌肉收縮但頭不動",
+            "維持5秒，重複10次",
+            "可分別向後、向左、向右練習"
+        ],
+        videoUrl: "https://www.youtube.com/results?search_query=%E9%A0%B8%E6%A4%8E%E7%AD%89%E9%95%B7%E6%94%B6%E7%B8%AE+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
+    },
+    {
+        id: 3,
+        title: "肩胛骨後收",
+        type: "肌力",
+        desc: "矯正圓肩，強化背部。",
+        detail: "改善「電腦族」最常見的姿勢性問題。",
+        steps: [
+            "站姿，雙手自然垂下",
+            "將兩側肩胛骨向中心與下方夾緊",
+            "維持5-10秒，感受上背肌肉收縮",
+            "重複15次"
+        ],
+        videoUrl: "https://www.youtube.com/results?search_query=%E8%82%A9%E8%83%9B%E9%AA%A8%E5%BE%8C%E6%94%B6+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
+    },
+    {
+        id: 4,
+        title: "胸大肌伸展",
+        type: "伸展",
+        desc: "拉開前側緊繃，改善呼吸。",
+        detail: "胸部過緊會將肩膀往前拉，導致後頸壓力過大。",
+        steps: [
+            "找一處牆角或門框",
+            "手肘與肩同高呈90度抵住牆",
+            "身體重心微微前移，感受胸前拉扯",
+            "維持30秒"
+        ],
+        videoUrl: "https://www.youtube.com/results?search_query=%E8%83%B8%E5%A4%A7%E8%82%8C%E4%BC%B8%E5%B1%95+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
+    },
+    {
+        id: 5,
+        title: "下巴內收 (Chin Tuck)",
+        type: "放鬆",
+        desc: "矯正烏龜頸的黃金動作。",
+        detail: "這是治療頸椎退化最重要的運動之一。",
+        steps: [
+            "雙眼平視前方",
+            "想像有人拉住頭頂往上，同時下巴往後縮（做出雙下巴）",
+            "維持2秒，重複20次"
+        ],
+        videoUrl: "https://www.youtube.com/results?search_query=%E7%B8%AE%E4%B8%8B%E5%B7%B4%E9%81%8B%E5%8B%95+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
+    },
+    {
+        id: 6,
+        title: "熱敷與放鬆擺位",
+        type: "放鬆",
+        desc: "促進血液循環，緩解急性緊繃。",
+        detail: "在睡前進行可有效改善因壓力導致的肌肉僵硬。",
+        steps: [
+            "使用40-45度溫熱毛巾或電熱毯",
+            "覆蓋於肩頸部15分鐘",
+            "平躺於硬床，頸部墊一捲小毛巾支撐弧度"
+        ],
+        videoUrl: "https://www.youtube.com/results?search_query=%E8%82%A9%E9%A0%B8%E6%94%BE%E9%AC%86%E6%93%BA%E4%BD%8D+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
+    }
+];
+</script>
+
 <body>
 
     <!-- App Header -->
@@ -731,50 +826,9 @@
 
     <script>
         // ── DATA ─────────────────────────────────────────────────────
-        const exercises = [
-            {
-                id: 1, title: "上斜方肌伸展", type: "伸展",
-                desc: "放鬆緊繃的肩頸交界處。",
-                steps: ["坐姿挺胸，右手抓住椅子邊緣固定肩膀","頭緩慢向左側傾斜，左手可輕輕輔助","維持20秒，重複3次","換邊操作"],
-                detail: "這動作能有效緩解因久坐導致的「聳肩」問題。",
-                videoUrl: "https://www.youtube.com/results?search_query=%E4%B8%8A%E6%96%9C%E6%96%B9%E8%82%8C%E4%BC%B8%E5%B1%95+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
-            },
-            {
-                id: 2, title: "頸椎等長收縮", type: "肌力",
-                desc: "增加頸椎穩定性，不產生關節負擔。",
-                steps: ["手掌抵住額頭，頭向前用力但手掌擋住","頸部肌肉收縮但頭不動","維持5秒，重複10次","可分別向後、向左、向右練習"],
-                detail: "適合初期疼痛期使用，能建立肌肉基礎力量。",
-                videoUrl: "https://www.youtube.com/results?search_query=%E9%A0%B8%E6%A4%8E%E7%AD%89%E9%95%B7%E6%94%B6%E7%B8%AE+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
-            },
-            {
-                id: 3, title: "肩胛骨後收", type: "肌力",
-                desc: "矯正圓肩，強化背部。",
-                steps: ["站姿，雙手自然垂下","將兩側肩胛骨向中心與下方夾緊","維持5-10秒，感受上背肌肉收縮","重複15次"],
-                detail: "改善「電腦族」最常見的姿勢性問題。",
-                videoUrl: "https://www.youtube.com/results?search_query=%E8%82%A9%E8%83%9B%E9%AA%A8%E5%BE%8C%E6%94%B6+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
-            },
-            {
-                id: 4, title: "胸大肌伸展", type: "伸展",
-                desc: "拉開前側緊繃，改善呼吸。",
-                steps: ["找一處牆角或門框","手肘與肩同高呈90度抵住牆","身體重心微微前移，感受胸前拉扯","維持30秒"],
-                detail: "胸部過緊會將肩膀往前拉，導致後頸壓力過大。",
-                videoUrl: "https://www.youtube.com/results?search_query=%E8%83%B8%E5%A4%A7%E8%82%8C%E4%BC%B8%E5%B1%95+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
-            },
-            {
-                id: 5, title: "下巴內收 (Chin Tuck)", type: "放鬆",
-                desc: "矯正烏龜頸的黃金動作。",
-                steps: ["雙眼平視前方","想像有人拉住頭頂往上，同時下巴往後縮（做出雙下巴）","維持2秒，重複20次"],
-                detail: "這是治療頸椎退化最重要的運動之一。",
-                videoUrl: "https://www.youtube.com/results?search_query=%E7%B8%AE%E4%B8%8B%E5%B7%B4%E9%81%8B%E5%8B%95+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
-            },
-            {
-                id: 6, title: "熱敷與放鬆擺位", type: "放鬆",
-                desc: "促進血液循環，緩解急性緊繃。",
-                steps: ["使用40-45度溫熱毛巾或電熱毯","覆蓋於肩頸部15分鐘","平躺於硬床，頸部墊一捲小毛巾支撐弧度"],
-                detail: "在睡前進行可有效改善因壓力導致的肌肉僵硬。",
-                videoUrl: "https://www.youtube.com/results?search_query=%E8%82%A9%E9%A0%B8%E6%94%BE%E9%AC%86%E6%93%BA%E4%BD%8D+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
-            }
-        ];
+        // Exercise data lives in the <script> block at the top of this
+        // file (just after </head>) — edit there to add/change exercises.
+        const exercises = EXERCISES;
 
         let currentVideoUrl = '';
 
