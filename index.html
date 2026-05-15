@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#FDFBF8">
-    <title>肩頸復健指南：影音教學版</title>
+    <meta name="theme-color" content="#8D9B6A">
+    <title>肩頸復健指南</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { font-size: 18px; }
@@ -14,962 +14,876 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
             background-color: #FDFBF8;
             color: #4A4A4A;
-            scroll-behavior: smooth;
             line-height: 1.7;
+            padding-bottom: 72px; /* space for mobile tab bar */
         }
 
-        /* Utility classes */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
-
-        /* Colors & Theme */
-        .bg-primary { background-color: #8D9B6A; }
-        .text-primary { color: #8D9B6A; }
-        .bg-secondary { background-color: #F8F4E1; }
-        .border-accent { border-color: #BFAE98; }
-        .text-white { color: white; }
-        .text-gray-600 { color: #666; }
-        .text-gray-700 { color: #555; }
-        .text-gray-800 { color: #333; }
-        .text-red-600 { color: #DC2626; }
-
-        /* Header */
-        header {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        /* ── TOP HEADER ─────────────────────────────────── */
+        .app-header {
+            background-color: #8D9B6A;
+            color: white;
+            padding: 0.875rem 1.5rem;
             position: sticky;
             top: 0;
             z-index: 40;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
-        nav {
+        .app-header h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .app-header .subtitle {
+            font-size: 0.72rem;
+            opacity: 0.85;
+            margin-top: 0.1rem;
+        }
+
+        /* ── DESKTOP TAB BAR ────────────────────────────── */
+        .tab-bar-desktop {
+            display: none;
+            background: white;
+            border-bottom: 2px solid #E5E7EB;
+            position: sticky;
+            top: 60px;
+            z-index: 39;
+        }
+        .tab-bar-desktop .tabs {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
         }
-        nav h1 {
+        .tab-bar-desktop .tab-btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #9CA3AF;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .tab-bar-desktop .tab-btn.active {
+            color: #8D9B6A;
+            border-bottom-color: #8D9B6A;
+        }
+        .tab-bar-desktop .tab-btn:hover:not(.active) {
+            color: #4A4A4A;
+            background: #F9FAFB;
+        }
+
+        /* ── MOBILE BOTTOM TAB BAR ──────────────────────── */
+        .tab-bar-mobile {
+            display: flex;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #E5E7EB;
+            z-index: 40;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .tab-bar-mobile .tab-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.55rem 0.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            gap: 0.15rem;
+            min-height: 56px;
+            transition: background 0.15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .tab-bar-mobile .tab-btn:active { background: #F3F4F6; }
+        .tab-icon { font-size: 1.3rem; line-height: 1; }
+        .tab-label {
+            font-size: 0.625rem;
+            font-weight: 600;
+            color: #9CA3AF;
+            letter-spacing: 0.02em;
+        }
+        .tab-bar-mobile .tab-btn.active .tab-label { color: #8D9B6A; }
+        .tab-dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: #8D9B6A;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .tab-bar-mobile .tab-btn.active .tab-dot { opacity: 1; }
+
+        @media (min-width: 768px) {
+            body { padding-bottom: 0; }
+            .tab-bar-mobile { display: none; }
+            .tab-bar-desktop { display: block; }
+        }
+
+        /* ── TAB PANELS ─────────────────────────────────── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── SHARED PAGE LAYOUT ─────────────────────────── */
+        .page-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.5rem 1.25rem 2rem;
+        }
+        .page-section h2 {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #8D9B6A;
-            letter-spacing: -0.5px;
+            color: #1F2937;
+            margin-bottom: 0.3rem;
         }
-        nav a {
-            text-decoration: none;
-            color: #4A4A4A;
-            font-weight: 500;
-            transition: color 0.2s;
-            padding: 0.5rem 1rem;
-        }
-        nav a:hover { color: #8D9B6A; }
-        nav a.safety { color: #DC2626; font-weight: 700; }
-        @media (max-width: 768px) {
-            nav { flex-direction: column; gap: 1rem; }
-            nav a { display: none; }
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 2rem 1.5rem;
-            background: linear-gradient(to bottom, #F8F4E1, transparent);
-            text-align: center;
-        }
-        .hero h2 {
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-        .hero p {
-            font-size: 1.125rem;
-            color: #666;
-            max-width: 32rem;
-            margin: 0 auto 1.5rem;
-            line-height: 1.8;
-        }
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        .btn {
-            padding: 0.875rem 2.5rem;
-            border-radius: 0.75rem;
-            font-weight: 700;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.0625rem;
-            transition: all 0.2s;
-            touch-action: manipulation;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-primary {
-            background-color: #8D9B6A;
-            color: white;
-            box-shadow: 0 4px 6px rgba(141,155,106,0.2);
-        }
-        .btn-primary:hover {
-            background-color: #7A8659;
-            box-shadow: 0 6px 12px rgba(141,155,106,0.3);
-            transform: translateY(-1px);
-        }
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-        .btn-secondary {
-            background-color: white;
-            color: #8D9B6A;
-            border: 2px solid #8D9B6A;
-        }
-        .btn-secondary:hover {
-            background-color: #8D9B6A;
-            color: white;
-        }
-        .btn-danger {
-            background-color: #FEE2E2;
-            color: #DC2626;
-            border: 2px solid #FECACA;
-        }
-        .btn-danger:hover {
-            background-color: #FCA5A5;
-            color: white;
-        }
-        .btn-yt {
-            background-color: #CD201F;
-            color: white;
-            box-shadow: 0 4px 6px rgba(205,32,31,0.2);
-        }
-        .btn-yt:hover {
-            background-color: #E62117;
-            box-shadow: 0 6px 12px rgba(205,32,31,0.3);
-            transform: translateY(-1px);
-        }
-
-        /* Safety Section */
-        .safety-section {
-            padding: 2rem 1.5rem;
-            background-color: #FEE2E2;
-        }
-        .safety-box {
-            max-width: 56rem;
-            margin: 0 auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            border: 2px solid #FECACA;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .safety-box h2 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #DC2626;
+        .lead {
+            color: #6B7280;
+            font-size: 0.9375rem;
             margin-bottom: 1.5rem;
         }
-        .safety-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            color: #4A4A4A;
-        }
-        @media (min-width: 768px) {
-            .safety-grid { grid-template-columns: 1fr 1fr; }
-        }
-        .safety-grid p {
-            font-weight: 700;
-            border-bottom: 1px solid #FEE2E2;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .safety-grid ul {
-            list-style: disc;
-            padding-left: 1.5rem;
-            space-y: 0.5rem;
-        }
-        .safety-grid li {
-            margin-bottom: 0.5rem;
-            color: #991B1B;
-        }
 
-        /* Assessment Section */
-        .assessment-section {
-            padding: 2rem 1.5rem;
-        }
-        .assessment-card {
-            max-width: 48rem;
-            margin: 0 auto;
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-            border: 1px solid #E5E7EB;
-            overflow: hidden;
-        }
-        .assessment-header {
-            background-color: #8D9B6A;
-            padding: 1.5rem;
-            color: white;
-        }
-        .assessment-header h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        .assessment-header p {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-        .assessment-body {
-            padding: 2rem;
-        }
-        .checkbox-group {
+        /* ── FILTER CHIPS ───────────────────────────────── */
+        .filter-row {
             display: flex;
-            align-items: flex-start;
-            padding: 1rem;
-            border: 1px solid #E5E7EB;
-            border-radius: 0.75rem;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            gap: 1rem;
-        }
-        .checkbox-group:hover {
-            background-color: #F9FAFB;
-        }
-        .checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-top: 0.25rem;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .checkbox-group div {
-            flex: 1;
-        }
-        .checkbox-group .label-text {
-            font-weight: 700;
-            display: block;
-            margin-bottom: 0.25rem;
-            color: #1F2937;
-            font-size: 1.0625rem;
-        }
-        .checkbox-group .label-subtext {
-            font-size: 0.9375rem;
-            color: #6B7280;
-        }
-        .result-box {
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            text-align: center;
-            display: none;
-        }
-        .result-box.show {
-            display: block;
-        }
-        .result-box.success {
-            background-color: #F0FDF4;
-            border: 2px solid #BBF7D0;
-            color: #166534;
-        }
-        .result-box.danger {
-            background-color: #FEF2F2;
-            border: 2px solid #FECACA;
-            color: #991B1B;
-        }
-        .result-box h4 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .result-box p {
-            font-weight: 700;
-        }
-        .result-box button {
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #6B7280;
-            text-decoration: underline;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        /* Exercise Library */
-        .exercises-section {
-            padding: 2rem 1.5rem;
-            background-color: #F9FAFB;
-        }
-        .section-header {
-            margin-bottom: 2rem;
-        }
-        .section-header h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-        .section-header p {
-            color: #6B7280;
-            font-size: 1rem;
-        }
-        .filter-group {
-            display: flex;
-            background: white;
-            padding: 0.25rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            border: 1px solid #E5E7EB;
-            gap: 0.25rem;
-            margin-bottom: 2rem;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
             overflow-x: auto;
+            padding-bottom: 0.25rem;
+            -webkit-overflow-scrolling: touch;
         }
-        .filter-btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            background: none;
+        .filter-chip {
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            border: 2px solid #D1D5DB;
+            background: white;
             color: #6B7280;
-            font-weight: 700;
-            font-size: 0.875rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
             cursor: pointer;
-            border-radius: 0.5rem;
-            transition: all 0.2s;
             white-space: nowrap;
             min-height: 44px;
+            transition: all 0.15s;
+            -webkit-tap-highlight-color: transparent;
         }
-        .filter-btn:hover {
-            background-color: #F3F4F6;
-        }
-        .filter-btn.active {
-            background-color: #8D9B6A;
+        .filter-chip.active {
+            background: #8D9B6A;
+            border-color: #8D9B6A;
             color: white;
         }
+
+        /* ── EXERCISE GRID ──────────────────────────────── */
         .exercise-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 2rem;
+            gap: 1rem;
         }
-        @media (min-width: 768px) {
+        @media (min-width: 600px) {
             .exercise-grid { grid-template-columns: repeat(2, 1fr); }
         }
-        @media (min-width: 1024px) {
+        @media (min-width: 900px) {
             .exercise-grid { grid-template-columns: repeat(3, 1fr); }
         }
         .exercise-card {
             background: white;
-            padding: 1.5rem;
-            border-radius: 1rem;
             border: 1px solid #E5E7EB;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 1rem;
+            padding: 1.25rem;
             cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            -webkit-tap-highlight-color: transparent;
         }
         .exercise-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
-        .exercise-card:active {
-            transform: translateY(-2px);
-        }
-        .exercise-badge {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 0.25rem 0.75rem;
-            background-color: rgba(141,155,106,0.1);
-            color: #8D9B6A;
-            border-radius: 0.375rem;
+        .exercise-card:active { transform: translateY(-1px); }
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 0.75rem;
         }
-        .exercise-card h3 {
-            font-size: 1.375rem;
+        .type-badge {
+            font-size: 0.72rem;
             font-weight: 700;
-            color: #1F2937;
-            margin-bottom: 0.5rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.375rem;
+            background: rgba(141,155,106,0.12);
+            color: #8D9B6A;
         }
-        .exercise-card p {
-            color: #6B7280;
-            font-size: 0.9375rem;
-        }
-        .video-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
+        .video-tag {
             font-size: 0.75rem;
             color: #DC2626;
             font-weight: 700;
-            margin-top: 1rem;
-            opacity: 0.8;
+        }
+        .exercise-card h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.375rem;
+        }
+        .exercise-card p {
+            color: #6B7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
         }
 
-        /* Modal */
+        /* ── MODAL ──────────────────────────────────────── */
         .modal-backdrop {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(3px);
             z-index: 50;
-            animation: fadeIn 0.2s;
         }
-        .modal-backdrop.show {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .modal-content {
+        .modal-backdrop.show { display: block; }
+        .modal-box {
             display: none;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
+            inset: 0;
+            z-index: 60;
+            padding: 1rem;
+            overflow-y: auto;
+            pointer-events: none;
+        }
+        .modal-box.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+        .modal-inner {
             background: white;
             border-radius: 1rem;
-            box-shadow: 0 20px 25px rgba(0,0,0,0.15);
-            z-index: 60;
-            overflow-y: auto;
+            width: 100%;
+            max-width: 560px;
             padding: 1.5rem;
-            animation: slideUp 0.3s;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: modalIn 0.25s ease;
         }
-        .modal-content.show {
-            display: block;
-        }
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -40%);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
-        }
-        @media (max-width: 640px) {
-            .modal-content {
-                width: 95%;
-                max-height: 85vh;
-                padding: 1.5rem 1rem;
-            }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
         .modal-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            gap: 1rem;
             border-bottom: 1px solid #E5E7EB;
             padding-bottom: 1rem;
             margin-bottom: 1rem;
         }
         .modal-header h2 {
-            font-size: 1.6875rem;
+            font-size: 1.3125rem;
             font-weight: 700;
             color: #1F2937;
         }
-        .modal-header .badge {
-            display: inline-block;
-            background-color: #8D9B6A;
+        .modal-badge {
+            background: #8D9B6A;
             color: white;
-            padding: 0.25rem 0.75rem;
+            padding: 0.25rem 0.6rem;
             border-radius: 0.375rem;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
+            flex-shrink: 0;
         }
         .modal-detail {
-            background-color: #F9FAFB;
-            padding: 1rem;
-            border-radius: 0.75rem;
+            background: #F9FAFB;
             border: 1px solid #E5E7EB;
-            margin-bottom: 1.5rem;
+            border-radius: 0.75rem;
+            padding: 0.875rem 1rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.9375rem;
             color: #4A4A4A;
         }
-        .modal-steps h4 {
+        .modal-steps-heading {
             font-weight: 700;
             border-left: 4px solid #8D9B6A;
             padding-left: 0.75rem;
-            margin-bottom: 1rem;
-            font-size: 1.125rem;
+            margin-bottom: 0.875rem;
+            font-size: 1rem;
         }
-        .modal-steps ul {
-            list-style: none;
-            space-y: 1rem;
-        }
+        .modal-steps { list-style: none; }
         .modal-steps li {
             display: flex;
             gap: 0.75rem;
             margin-bottom: 0.75rem;
             color: #4A4A4A;
+            font-size: 0.9375rem;
             line-height: 1.6;
         }
         .modal-steps li::before {
             content: "•";
             color: #8D9B6A;
             font-weight: 700;
-            flex-shrink: 0;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             line-height: 1.2;
+            flex-shrink: 0;
         }
         .modal-actions {
+            margin-top: 1.25rem;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1.125rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            border-top: 1px solid #E5E7EB;
-            padding-top: 1.5rem;
+            gap: 0.75rem;
         }
-        .modal-close {
-            background-color: #F3F4F6;
-            color: #4A4A4A;
-            padding: 0.75rem 1.5rem;
-            min-height: 44px;
+        .btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
             border-radius: 0.75rem;
             font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            transition: all 0.15s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
-        .modal-close:hover {
-            background-color: #E5E7EB;
-        }
-        .modal-close:focus-visible {
-            outline: 3px solid #CD201F;
-            outline-offset: 2px;
+        .btn-yt { background: #CD201F; color: white; }
+        .btn-yt:hover { background: #b91c1b; }
+        .btn-close { background: #F3F4F6; color: #374151; }
+        .btn-close:hover { background: #E5E7EB; }
+        .btn-hint {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #9CA3AF;
         }
 
-        /* Knowledge Section */
-        .knowledge-section {
-            padding: 2rem 1.5rem;
+        /* ── ASSESSMENT ─────────────────────────────────── */
+        .screener-card {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
-        .knowledge-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            max-width: 64rem;
-            margin: 0 auto;
+        .screener-head {
+            background: #8D9B6A;
+            padding: 1.125rem 1.5rem;
+            color: white;
         }
-        @media (min-width: 1024px) {
-            .knowledge-grid { grid-template-columns: 1fr 1fr; }
-        }
-        .knowledge-text h2 {
-            font-size: 1.75rem;
+        .screener-head h3 {
+            font-size: 1.0625rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.2rem;
         }
-        .knowledge-text p {
-            color: #666;
-            margin-bottom: 1.5rem;
+        .screener-head p { font-size: 0.875rem; opacity: 0.9; }
+        .screener-body { padding: 1.25rem 1.5rem; }
+        .checkbox-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.875rem 1rem;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .checkbox-row:hover { background: #F9FAFB; }
+        .checkbox-row input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+            cursor: pointer;
+            accent-color: #8D9B6A;
+        }
+        .label-main {
+            display: block;
+            font-weight: 700;
+            color: #1F2937;
+            font-size: 1rem;
+        }
+        .label-sub {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+        .btn-assess {
+            width: 100%;
+            margin-top: 0.25rem;
+            padding: 1rem;
+            background: #1F2937;
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 52px;
+            transition: background 0.15s;
+        }
+        .btn-assess:hover { background: #111827; }
+        .result-box {
+            display: none;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+        .result-box.show { display: block; }
+        .result-box h4 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+        .result-box p { font-weight: 600; font-size: 0.9375rem; }
+        .result-box.success {
+            background: #F0FDF4;
+            border: 2px solid #86EFAC;
+            color: #166534;
+        }
+        .result-box.danger {
+            background: #FEF2F2;
+            border: 2px solid #FECACA;
+            color: #991B1B;
+        }
+        .btn-reset {
+            margin-top: 1rem;
+            background: none;
+            border: none;
+            font-size: 0.875rem;
+            color: #6B7280;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* ── SAFETY TAB ─────────────────────────────────── */
+        .warning-banner {
+            background: #FEF2F2;
+            border: 2px solid #FECACA;
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .warning-banner h3 {
+            color: #DC2626;
+            font-size: 1.0625rem;
+            font-weight: 700;
+            margin-bottom: 0.875rem;
+        }
+        .warning-list { list-style: none; }
+        .warning-list li {
+            display: flex;
+            gap: 0.6rem;
+            color: #991B1B;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            margin-bottom: 0.6rem;
+            line-height: 1.5;
+        }
+        .warning-list li::before {
+            content: "⛔";
+            font-size: 0.875rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+        .info-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.125rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .info-card h3 {
+            font-size: 1.0625rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.875rem;
+        }
+        .info-card p {
+            color: #4A4A4A;
+            font-size: 0.9375rem;
             line-height: 1.7;
-        }
-        .benefit-list {
-            space-y: 1rem;
+            margin-bottom: 0.75rem;
         }
         .benefit-item {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            align-items: flex-start;
+            gap: 0.875rem;
+            margin-bottom: 0.875rem;
         }
         .benefit-num {
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 1.875rem;
+            height: 1.875rem;
             border-radius: 50%;
-            background-color: rgba(141,155,106,0.15);
+            background: rgba(141,155,106,0.15);
             color: #8D9B6A;
             font-weight: 700;
+            font-size: 0.875rem;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
         .benefit-text {
-            font-weight: 500;
+            font-size: 0.9375rem;
+            font-weight: 600;
             color: #333;
-            padding-top: 0.25rem;
+            padding-top: 0.2rem;
         }
-        .chart-container {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border: 1px solid #E5E7EB;
+        .chart-wrap {
+            position: relative;
+            height: 240px;
+            margin-top: 1rem;
         }
-        .chart-container h4 {
+        .footer-note {
             text-align: center;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-        #recoveryChart {
-            max-width: 100%;
-            height: 300px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #1F2937;
-            color: #9CA3AF;
-            padding: 2rem 1.5rem;
-            text-align: center;
-        }
-        footer p {
-            margin-bottom: 0.5rem;
-        }
-        footer .copyright {
             font-size: 0.75rem;
-            color: #6B7280;
+            color: #9CA3AF;
+            margin-top: 1.5rem;
+            padding-bottom: 0.5rem;
         }
 
-        /* Focus & Accessibility */
+        /* ── A11Y ───────────────────────────────────────── */
         button:focus-visible,
-        input:focus-visible,
-        a:focus-visible {
-            outline: 3px solid #CD201F;
+        input:focus-visible {
+            outline: 3px solid #8D9B6A;
             outline-offset: 2px;
         }
-
-        /* Loading state */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        /* Smooth transitions */
         @media (prefers-reduced-motion: reduce) {
-            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <h1>肩頸復健中心</h1>
-            <div style="display: flex; gap: 2rem;">
-                <a href="#safety" class="safety">安全禁忌</a>
-                <a href="#assessment">自我評估</a>
-                <a href="#exercises">運動庫</a>
-                <a href="#knowledge">衛教資訊</a>
-            </div>
-        </nav>
+
+    <!-- App Header -->
+    <header class="app-header">
+        <h1>肩頸復健中心</h1>
+        <div class="subtitle">居家復健指南 ‧ 影音教學輔助</div>
     </header>
 
+    <!-- Desktop tab bar -->
+    <nav class="tab-bar-desktop" aria-label="主選單">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('safety', this)">📋 安全指引</button>
+            <button class="tab-btn" onclick="switchTab('assessment', this)">✅ 自我評估</button>
+            <button class="tab-btn" onclick="switchTab('exercises', this)">🏃 復健運動</button>
+        </div>
+    </nav>
+
     <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <h2>專業居家肩頸修復與影音教學</h2>
-                <p>極速載入核心動作，並為每個復健運動配備了專屬的物理治療師教學影片連結，確保您的姿勢正確、安全有效。</p>
-                <div class="button-group">
-                    <a href="#safety" class="btn btn-danger">詳閱安全須知</a>
-                    <a href="#assessment" class="btn btn-primary">開始評估</a>
-                    <a href="#exercises" class="btn btn-secondary">查看動作與影片</a>
+
+        <!-- ── TAB 1: EXERCISES ──────────────────────────── -->
+        <div id="tab-exercises" class="tab-panel" role="tabpanel" aria-label="復健運動">
+            <div class="page-section">
+                <h2>復健運動庫</h2>
+                <p class="lead">點擊卡片查看步驟與影片教學。</p>
+                <div class="filter-row" role="group" aria-label="類型篩選">
+                    <button class="filter-chip active" data-type="all">全部</button>
+                    <button class="filter-chip" data-type="伸展">伸展</button>
+                    <button class="filter-chip" data-type="肌力">肌力</button>
+                    <button class="filter-chip" data-type="放鬆">放鬆</button>
                 </div>
-            </div>
-        </section>
-
-        <!-- Safety Section -->
-        <section id="safety" class="safety-section">
-            <div class="container">
-                <div class="safety-box">
-                    <h2>⚠ 運動禁忌與中止指標</h2>
-                    <div class="safety-grid">
-                        <div>
-                            <p>出現以下狀況請立即停止：</p>
-                            <ul>
-                                <li>運動時產生劇烈刺痛感</li>
-                                <li>手部麻木感擴散至指尖</li>
-                                <li>出現嚴重頭暈或視力模糊</li>
-                                <li>關節處有異常的卡住感或腫脹</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <p>重要提醒：</p>
-                            <p style="font-weight: 400; font-size: 0.95rem; border: none; padding: 0;">
-                                居家復健屬於輔助性質，若影片教學與您的感受有落差，或症狀持續超過二週未改善，請務必尋求物理治療師進行一對一評估，確保動作正確性。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Assessment Section -->
-        <section id="assessment" class="assessment-section">
-            <div class="container">
-                <div class="assessment-card">
-                    <div class="assessment-header">
-                        <h3>快速安全篩檢 (Screener)</h3>
-                        <p>為了您的安全，請勾選是否有以下症狀：</p>
-                    </div>
-                    <div class="assessment-body">
-                        <div id="quiz-step">
-                            <label class="checkbox-group">
-                                <input type="checkbox" class="red-flag">
-                                <div>
-                                    <span class="label-text">神經症狀</span>
-                                    <span class="label-subtext">手臂明顯發麻、無力或有觸電感</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-group">
-                                <input type="checkbox" class="red-flag">
-                                <div>
-                                    <span class="label-text">劇烈疼痛</span>
-                                    <span class="label-subtext">靜止時也劇痛、無法入眠或輕觸即痛</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-group">
-                                <input type="checkbox" class="red-flag">
-                                <div>
-                                    <span class="label-text">其他警訊</span>
-                                    <span class="label-subtext">伴隨發燒、頭暈、噁心或近期嚴重外傷史</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-group">
-                                <input type="checkbox" class="red-flag">
-                                <div>
-                                    <span class="label-text">無</span>
-                                    <span class="label-subtext">我沒有上述任何症狀，可以開始運動</span>
-                                </div>
-                            </label>
-                            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="checkAssessment()">確認評估結果</button>
-                        </div>
-
-                        <div id="quiz-result" class="result-box">
-                            <div id="result-text"></div>
-                            <button onclick="resetAssessment()">重新評估</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Exercise Library -->
-        <section id="exercises" class="exercises-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2>復健運動庫</h2>
-                    <p>點擊卡片查看動作詳情與<span class="text-red-600" style="font-weight: 700;">教學影片</span>。</p>
-                </div>
-
-                <div class="filter-group">
-                    <button class="filter-btn active" data-type="all">全部</button>
-                    <button class="filter-btn" data-type="伸展">伸展</button>
-                    <button class="filter-btn" data-type="肌力">肌力</button>
-                    <button class="filter-btn" data-type="放鬆">放鬆</button>
-                </div>
-
                 <div id="exercise-grid" class="exercise-grid"></div>
             </div>
-        </section>
+        </div>
 
-        <!-- Knowledge Section -->
-        <section id="knowledge" class="knowledge-section">
-            <div class="container">
-                <div class="knowledge-grid">
-                    <div class="knowledge-text">
-                        <h2>為什麼運動比休息更有效？</h2>
-                        <p>根據物理治療研究，長期維持固定姿勢會導致局部血液循環不良與肌肉廢用性萎縮。規律的訓練能增加肌肉耐受力，並重新建立正確的神經肌肉控制。</p>
-                        <div class="benefit-list">
-                            <div class="benefit-item">
-                                <div class="benefit-num">1</div>
-                                <div class="benefit-text">改善血液循環，排除發炎物質</div>
-                            </div>
-                            <div class="benefit-item">
-                                <div class="benefit-num">2</div>
-                                <div class="benefit-text">強化深層肌群，支撐頸椎結構</div>
-                            </div>
-                            <div class="benefit-item">
-                                <div class="benefit-num">3</div>
-                                <div class="benefit-text">調整關節活動度，減少骨刺生成風險</div>
-                            </div>
+        <!-- ── TAB 2: ASSESSMENT ─────────────────────────── -->
+        <div id="tab-assessment" class="tab-panel" role="tabpanel" aria-label="自我評估">
+            <div class="page-section">
+                <h2>自我評估</h2>
+                <p class="lead">開始運動前，先完成這份快速篩檢確認您的狀況。</p>
+                <div class="screener-card">
+                    <div class="screener-head">
+                        <h3>快速安全篩檢 (Screener)</h3>
+                        <p>請勾選是否有以下症狀：</p>
+                    </div>
+                    <div class="screener-body">
+                        <div id="quiz-step">
+                            <label class="checkbox-row">
+                                <input type="checkbox" class="red-flag">
+                                <div>
+                                    <span class="label-main">神經症狀</span>
+                                    <span class="label-sub">手臂明顯發麻、無力或有觸電感</span>
+                                </div>
+                            </label>
+                            <label class="checkbox-row">
+                                <input type="checkbox" class="red-flag">
+                                <div>
+                                    <span class="label-main">劇烈疼痛</span>
+                                    <span class="label-sub">靜止時也劇痛、無法入眠或輕觸即痛</span>
+                                </div>
+                            </label>
+                            <label class="checkbox-row">
+                                <input type="checkbox" class="red-flag">
+                                <div>
+                                    <span class="label-main">其他警訊</span>
+                                    <span class="label-sub">伴隨發燒、頭暈、噁心或近期嚴重外傷史</span>
+                                </div>
+                            </label>
+                            <label class="checkbox-row">
+                                <input type="checkbox" class="red-flag">
+                                <div>
+                                    <span class="label-main">無</span>
+                                    <span class="label-sub">我沒有上述任何症狀，可以開始運動</span>
+                                </div>
+                            </label>
+                            <button class="btn-assess" onclick="checkAssessment()">確認評估結果</button>
+                        </div>
+                        <div id="quiz-result" class="result-box">
+                            <div id="result-text"></div>
+                            <button class="btn-reset" onclick="resetAssessment()">重新評估</button>
                         </div>
                     </div>
-                    <div class="chart-container">
-                        <h4>預期恢復成效分析</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── TAB 3: SAFETY ─────────────────────────────── -->
+        <div id="tab-safety" class="tab-panel active" role="tabpanel" aria-label="安全指引">
+            <div class="page-section">
+                <h2>安全指引</h2>
+                <p class="lead">運動前後請仔細閱讀以下注意事項。</p>
+
+                <div class="warning-banner">
+                    <h3>⚠️ 出現以下狀況請立即停止</h3>
+                    <ul class="warning-list">
+                        <li>運動時產生劇烈刺痛感</li>
+                        <li>手部麻木感擴散至指尖</li>
+                        <li>出現嚴重頭暈或視力模糊</li>
+                        <li>關節處有異常的卡住感或腫脹</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>📌 重要提醒</h3>
+                    <p>居家復健屬於輔助性質，若影片教學與您的感受有落差，或症狀持續超過二週未改善，請務必尋求物理治療師進行一對一評估，確保動作正確性。</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>💡 為什麼運動比休息更有效？</h3>
+                    <p>根據物理治療研究，長期維持固定姿勢會導致局部血液循環不良與肌肉廢用性萎縮。規律的訓練能增加肌肉耐受力，並重新建立正確的神經肌肉控制。</p>
+                    <div class="benefit-item">
+                        <div class="benefit-num">1</div>
+                        <div class="benefit-text">改善血液循環，排除發炎物質</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-num">2</div>
+                        <div class="benefit-text">強化深層肌群，支撐頸椎結構</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-num">3</div>
+                        <div class="benefit-text">調整關節活動度，減少骨刺生成風險</div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>📊 預期恢復成效分析</h3>
+                    <div class="chart-wrap">
                         <canvas id="recoveryChart"></canvas>
                     </div>
                 </div>
+
+                <p class="footer-note">&copy; 2026 肩頸復健中心 ‧ 此內容僅供教育參考，不具醫療診斷效力。</p>
             </div>
-        </section>
+        </div>
+
     </main>
 
-    <footer>
-        <p style="color: white; font-weight: 500;">專業物理治療資訊彙整 ‧ 影音教學輔助 ‧ 安全首位</p>
-        <p class="copyright">&copy; 2026 肩頸復健中心. 此內容僅供教育參考，不具醫療診斷效力。</p>
-    </footer>
+    <!-- Mobile bottom tab bar -->
+    <nav class="tab-bar-mobile" aria-label="主選單">
+        <button class="tab-btn active" onclick="switchTab('safety', this)">
+            <span class="tab-icon">📋</span>
+            <span class="tab-label">安全指引</span>
+            <span class="tab-dot"></span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('assessment', this)">
+            <span class="tab-icon">✅</span>
+            <span class="tab-label">自我評估</span>
+            <span class="tab-dot"></span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('exercises', this)">
+            <span class="tab-icon">🏃</span>
+            <span class="tab-label">復健運動</span>
+            <span class="tab-dot"></span>
+        </button>
+    </nav>
 
     <!-- Modal -->
     <div id="modal-backdrop" class="modal-backdrop" onclick="closeModal()"></div>
-    <div id="exercise-modal" class="modal-content">
-        <div id="modal-body"></div>
-        <div class="modal-actions">
-            <button class="btn btn-yt" id="video-button" style="width: 100%;" onclick="openVideoLink()">
-                ▶ 在 YouTube 觀看物理治療師示範
-            </button>
-            <p style="text-align: center; font-size: 0.75rem; color: #999; margin: 0;">點擊將開啟新分頁，為您過濾精選的專業治療師教學</p>
-            <button class="btn modal-close" onclick="closeModal()">關閉視窗</button>
+    <div id="modal-box" class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-inner">
+            <div id="modal-body"></div>
+            <div class="modal-actions">
+                <button class="btn btn-yt" onclick="openVideoLink()">▶ 在 YouTube 觀看物理治療師示範</button>
+                <p class="btn-hint">點擊將開啟新分頁</p>
+                <button class="btn btn-close" onclick="closeModal()">關閉視窗</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Exercise Database
+        // ── DATA ─────────────────────────────────────────────────────
         const exercises = [
-            { 
-                id: 1, 
-                title: "上斜方肌伸展", 
-                type: "伸展", 
-                desc: "放鬆緊繃的肩頸交界處。", 
-                steps: ["坐姿挺胸，右手抓住椅子邊緣固定肩膀","頭緩慢向左側傾斜，左手可輕輕輔助","維持20秒，重複3次","換邊操作"], 
+            {
+                id: 1, title: "上斜方肌伸展", type: "伸展",
+                desc: "放鬆緊繃的肩頸交界處。",
+                steps: ["坐姿挺胸，右手抓住椅子邊緣固定肩膀","頭緩慢向左側傾斜，左手可輕輕輔助","維持20秒，重複3次","換邊操作"],
                 detail: "這動作能有效緩解因久坐導致的「聳肩」問題。",
                 videoUrl: "https://www.youtube.com/results?search_query=%E4%B8%8A%E6%96%9C%E6%96%B9%E8%82%8C%E4%BC%B8%E5%B1%95+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
             },
-            { 
-                id: 2, 
-                title: "頸椎等長收縮", 
-                type: "肌力", 
-                desc: "增加頸椎穩定性，不產生關節負擔。", 
-                steps: ["手掌抵住額頭，頭向前用力但手掌擋住","頸部肌肉收縮但頭不動","維持5秒，重複10次","可分別向後、向左、向右練習"], 
+            {
+                id: 2, title: "頸椎等長收縮", type: "肌力",
+                desc: "增加頸椎穩定性，不產生關節負擔。",
+                steps: ["手掌抵住額頭，頭向前用力但手掌擋住","頸部肌肉收縮但頭不動","維持5秒，重複10次","可分別向後、向左、向右練習"],
                 detail: "適合初期疼痛期使用，能建立肌肉基礎力量。",
                 videoUrl: "https://www.youtube.com/results?search_query=%E9%A0%B8%E6%A4%8E%E7%AD%89%E9%95%B7%E6%94%B6%E7%B8%AE+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
             },
-            { 
-                id: 3, 
-                title: "肩胛骨後收", 
-                type: "肌力", 
-                desc: "矯正圓肩，強化背部。","steps": ["站姿，雙手自然垂下","將兩側肩胛骨向中心與下方夾緊","維持5-10秒，感受上背肌肉收縮","重複15次"], 
+            {
+                id: 3, title: "肩胛骨後收", type: "肌力",
+                desc: "矯正圓肩，強化背部。",
+                steps: ["站姿，雙手自然垂下","將兩側肩胛骨向中心與下方夾緊","維持5-10秒，感受上背肌肉收縮","重複15次"],
                 detail: "改善「電腦族」最常見的姿勢性問題。",
                 videoUrl: "https://www.youtube.com/results?search_query=%E8%82%A9%E8%83%9B%E9%AA%A8%E5%BE%8C%E6%94%B6+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
             },
-            { 
-                id: 4, 
-                title: "胸大肌伸展", 
-                type: "伸展", 
-                desc: "拉開前側緊繃，改善呼吸。","steps": ["找一處牆角或門框","手肘與肩同高呈90度抵住牆","身體重心微微前移，感受胸前拉扯","維持30秒"], 
+            {
+                id: 4, title: "胸大肌伸展", type: "伸展",
+                desc: "拉開前側緊繃，改善呼吸。",
+                steps: ["找一處牆角或門框","手肘與肩同高呈90度抵住牆","身體重心微微前移，感受胸前拉扯","維持30秒"],
                 detail: "胸部過緊會將肩膀往前拉，導致後頸壓力過大。",
                 videoUrl: "https://www.youtube.com/results?search_query=%E8%83%B8%E5%A4%A7%E8%82%8C%E4%BC%B8%E5%B1%95+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
             },
-            { 
-                id: 5, 
-                title: "下巴內收 (Chin Tuck)", 
-                type: "放鬆", 
-                desc: "矯正烏龜頸的黃金動作。","steps": ["雙眼平視前方","想像有人拉住頭頂往上，同時下巴往後縮（做出雙下巴）","維持2秒，重複20次"], 
+            {
+                id: 5, title: "下巴內收 (Chin Tuck)", type: "放鬆",
+                desc: "矯正烏龜頸的黃金動作。",
+                steps: ["雙眼平視前方","想像有人拉住頭頂往上，同時下巴往後縮（做出雙下巴）","維持2秒，重複20次"],
                 detail: "這是治療頸椎退化最重要的運動之一。",
                 videoUrl: "https://www.youtube.com/results?search_query=%E7%B8%AE%E4%B8%8B%E5%B7%B4%E9%81%8B%E5%8B%95+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
             },
-            { 
-                id: 6, 
-                title: "熱敷與放鬆擺位", 
-                type: "放鬆", 
-                desc: "促進血液循環，緩解急性緊繃。","steps": ["使用40-45度溫熱毛巾或電熱毯","覆蓋於肩頸部15分鐘","平躺於硬床，頸部墊一捲小毛巾支撐弧度"], 
+            {
+                id: 6, title: "熱敷與放鬆擺位", type: "放鬆",
+                desc: "促進血液循環，緩解急性緊繃。",
+                steps: ["使用40-45度溫熱毛巾或電熱毯","覆蓋於肩頸部15分鐘","平躺於硬床，頸部墊一捲小毛巾支撐弧度"],
                 detail: "在睡前進行可有效改善因壓力導致的肌肉僵硬。",
                 videoUrl: "https://www.youtube.com/results?search_query=%E8%82%A9%E9%A0%B8%E6%94%BE%E9%AC%86%E6%93%BA%E4%BD%8D+%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82"
             }
         ];
 
-        let currentExerciseUrl = '';
+        let currentVideoUrl = '';
 
-        // Render exercises
-        function renderExercises(filter = 'all') {
-            const grid = document.getElementById('exercise-grid');
-            const items = filter === 'all' ? exercises : exercises.filter(e => e.type === filter);
-            grid.innerHTML = items.map(ex => `
-                <div class="exercise-card" onclick="openModal(${ex.id})">
-                    <span class="exercise-badge">${ex.type}</span>
+        // ── TAB SWITCHING ─────────────────────────────────────────────
+        function switchTab(tabId, clickedBtn) {
+            // Hide all panels, show the target
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            // Sync both desktop + mobile bars by matching onclick text
+            const selector = '.tab-bar-desktop .tab-btn, .tab-bar-mobile .tab-btn';
+            document.querySelectorAll(selector).forEach(b => {
+                b.classList.remove('active');
+                if ((b.getAttribute('onclick') || '').includes("'" + tabId + "'")) {
+                    b.classList.add('active');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Lazy-load chart only when safety tab first opens
+            if (tabId === 'safety' && !window.chartLoaded) loadChart();
+        }
+
+        // ── EXERCISES ─────────────────────────────────────────────────
+        function renderExercises(filter) {
+            const items = (!filter || filter === 'all')
+                ? exercises
+                : exercises.filter(e => e.type === filter);
+            document.getElementById('exercise-grid').innerHTML = items.map(ex => `
+                <article class="exercise-card" onclick="openModal(${ex.id})">
+                    <div class="card-top">
+                        <span class="type-badge">${ex.type}</span>
+                        <span class="video-tag">▶ 影片</span>
+                    </div>
                     <h3>${ex.title}</h3>
                     <p>${ex.desc}</p>
-                    <div class="video-indicator">▶ 影片教學</div>
-                </div>
+                </article>
             `).join('');
         }
 
-        // Open modal
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function () {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                renderExercises(this.dataset.type);
+            });
+        });
+
+        // ── MODAL ─────────────────────────────────────────────────────
         function openModal(id) {
             const ex = exercises.find(e => e.id === id);
-            currentExerciseUrl = ex.videoUrl;
-            
-            const modalBody = document.getElementById('modal-body');
-            modalBody.innerHTML = `
+            currentVideoUrl = ex.videoUrl;
+            document.getElementById('modal-body').innerHTML = `
                 <div class="modal-header">
-                    <h2>${ex.title}</h2>
-                    <span class="badge">${ex.type}</span>
+                    <h2 id="modal-title">${ex.title}</h2>
+                    <span class="modal-badge">${ex.type}</span>
                 </div>
                 <div class="modal-detail">${ex.detail}</div>
-                <div class="modal-steps">
-                    <h4>執行步驟</h4>
-                    <ul>
-                        ${ex.steps.map(s => `<li>${s}</li>`).join('')}
-                    </ul>
-                </div>
+                <p class="modal-steps-heading">執行步驟</p>
+                <ul class="modal-steps">
+                    ${ex.steps.map(s => `<li>${s}</li>`).join('')}
+                </ul>
             `;
-
-            const backdrop = document.getElementById('modal-backdrop');
-            const modal = document.getElementById('exercise-modal');
-            
-            backdrop.classList.add('show');
-            modal.classList.add('show');
+            document.getElementById('modal-backdrop').classList.add('show');
+            document.getElementById('modal-box').classList.add('show');
             document.body.style.overflow = 'hidden';
-
-            // Focus close button for accessibility
             setTimeout(() => {
-                const closeBtn = modal.querySelector('.modal-close');
+                const closeBtn = document.querySelector('#modal-box .btn-close');
                 if (closeBtn) closeBtn.focus();
-            }, 100);
+            }, 80);
         }
 
-        // Close modal
         function closeModal() {
-            const backdrop = document.getElementById('modal-backdrop');
-            const modal = document.getElementById('exercise-modal');
-            
-            backdrop.classList.remove('show');
-            modal.classList.remove('show');
-            document.body.style.overflow = 'auto';
+            document.getElementById('modal-backdrop').classList.remove('show');
+            document.getElementById('modal-box').classList.remove('show');
+            document.body.style.overflow = '';
         }
 
-        // Open video link
         function openVideoLink() {
-            if (currentExerciseUrl) {
-                window.open(currentExerciseUrl, '_blank', 'noopener,noreferrer');
-            }
+            if (currentVideoUrl) window.open(currentVideoUrl, '_blank', 'noopener,noreferrer');
         }
 
-        // Assessment
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.getElementById('modal-box').classList.contains('show')) closeModal();
+        });
+
+        // ── ASSESSMENT ────────────────────────────────────────────────
         function checkAssessment() {
-            // Get all checkboxes except the last one (which is "無")
             const allFlags = document.querySelectorAll('.red-flag');
             let warningCount = 0;
-            
-            // Count only the first 3 symptoms (index 0-2), not the "無" option (index 3)
             for (let i = 0; i < 3; i++) {
-                if (allFlags[i].checked) {
-                    warningCount++;
-                }
+                if (allFlags[i].checked) warningCount++;
             }
-            
-            const stepDiv = document.getElementById('quiz-step');
+            document.getElementById('quiz-step').style.display = 'none';
             const resultDiv = document.getElementById('quiz-result');
             const resultText = document.getElementById('result-text');
-
-            stepDiv.style.display = 'none';
             resultDiv.classList.add('show');
-
             if (warningCount > 0) {
-                resultDiv.classList.remove('success');
-                resultDiv.classList.add('danger');
+                resultDiv.className = 'result-box show danger';
                 resultText.innerHTML = `
                     <h4>🚫 建議停止操作</h4>
                     <p>檢測到危險訊號，請務必諮詢物理治療師或醫師，不建議自行進行居家復健。</p>
                 `;
             } else {
-                resultDiv.classList.remove('danger');
-                resultDiv.classList.add('success');
+                resultDiv.className = 'result-box show success';
                 resultText.innerHTML = `
                     <h4>✅ 安全通過</h4>
-                    <p>您可以繼續下方的基礎運動，點擊影片按鈕確保動作正確。若過程中出現不適請立即停止。</p>
+                    <p>您可以前往「復健運動」頁面開始基礎運動。若過程中出現不適請立即停止。</p>
                 `;
             }
         }
@@ -977,89 +891,56 @@
         function resetAssessment() {
             document.querySelectorAll('.red-flag').forEach(i => i.checked = false);
             document.getElementById('quiz-step').style.display = 'block';
-            document.getElementById('quiz-result').classList.remove('show');
+            document.getElementById('quiz-result').className = 'result-box';
         }
 
-        // Filtering
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                renderExercises(this.dataset.type);
-            });
-        });
-
-        // Keyboard close modal
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                const modal = document.getElementById('exercise-modal');
-                if (modal.classList.contains('show')) {
-                    closeModal();
-                }
-            }
-        });
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            renderExercises();
-
-            // Load Chart.js only when knowledge section is needed
-            const scriptTag = document.createElement('script');
-            scriptTag.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
-            scriptTag.onload = initChart;
-            document.head.appendChild(scriptTag);
-        });
-
-        function initChart() {
-            const ctx = document.getElementById('recoveryChart');
-            if (!ctx) return;
-            
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['第0週', '第2週', '第4週', '第6週', '第8週', '第12週'],
-                    datasets: [
-                        {
-                            label: '主動復健 (正確運動)',
-                            data: [10, 30, 60, 85, 95, 100],
-                            borderColor: '#8D9B6A',
-                            backgroundColor: 'rgba(141, 155, 106, 0.1)',
-                            fill: true,
-                            tension: 0.4,
-                            borderWidth: 2
-                        },
-                        {
-                            label: '被動復健 (僅休息)',
-                            data: [10, 15, 20, 25, 25, 30],
-                            borderColor: '#BFAE98',
-                            borderDash: [5, 5],
-                            tension: 0.1,
-                            borderWidth: 2
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            labels: { font: { size: 12, family: "'Noto Sans TC', sans-serif" } }
-                        },
-                        tooltip: { mode: 'index', intersect: false }
+        // ── CHART (lazy, only loads when safety tab opened) ───────────
+        function loadChart() {
+            window.chartLoaded = true;
+            const s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+            s.onload = () => {
+                const ctx = document.getElementById('recoveryChart');
+                if (!ctx) return;
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['第0週','第2週','第4週','第6週','第8週','第12週'],
+                        datasets: [
+                            {
+                                label: '主動復健 (正確運動)',
+                                data: [10,30,60,85,95,100],
+                                borderColor: '#8D9B6A',
+                                backgroundColor: 'rgba(141,155,106,0.1)',
+                                fill: true, tension: 0.4, borderWidth: 2
+                            },
+                            {
+                                label: '被動復健 (僅休息)',
+                                data: [10,15,20,25,25,30],
+                                borderColor: '#BFAE98',
+                                borderDash: [5,5],
+                                tension: 0.1, borderWidth: 2
+                            }
+                        ]
                     },
-                    scales: {
-                        y: { 
-                            max: 100,
-                            min: 0,
-                            ticks: { font: { size: 12 } }
-                        },
-                        x: {
-                            ticks: { font: { size: 12 } }
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { tooltip: { mode: 'index', intersect: false } },
+                        scales: {
+                            y: { min: 0, max: 100, ticks: { font: { size: 13 } } },
+                            x: { ticks: { font: { size: 13 } } }
                         }
                     }
-                }
-            });
+                });
+            };
+            document.head.appendChild(s);
         }
+
+        // ── INIT ──────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            renderExercises();
+            loadChart(); // safety tab is default, load chart immediately
+        });
     </script>
 </body>
 </html>
