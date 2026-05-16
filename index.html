@@ -547,6 +547,31 @@
             padding-bottom: 0.5rem;
         }
 
+        /* ── EMBED IFRAME ───────────────────────────────── */
+        .modal-video-section {
+            margin-top: 1.25rem;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1rem;
+        }
+        /* 16:9 responsive container */
+        .embed-wrap {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            background: #000;
+        }
+        .embed-wrap iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 0.75rem;
+        }
+
         /* ── A11Y ───────────────────────────────────────── */
         button:focus-visible,
         input:focus-visible {
@@ -583,7 +608,8 @@ const EXERCISES = [
             "維持20秒，重複3次",
             "換邊操作"
         ],
-        videoUrl: "https://www.youtube.com/results?search_query=%E4%B8%8A%E6%96%9C%E6%96%B9%E8%82%8C%E4%BC%B8%E5%B1%95+%E5%95%BEc%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82%E5%B8%AB"
+        videoUrl: "https://www.youtube.com/results?search_query=%E4%B8%8A%E6%96%9C%E6%96%B9%E8%82%8C%E4%BC%B8%E5%B1%95+%E5%95%BEc%E7%89%A9%E7%90%86%E6%B2%BB%E7%99%82%E5%B8%AB",
+        embedUrl: "https://www.youtube.com/embed/videoseries?si=rqZCHDl1rkl8zH-S&list=PLILteX10LIgfCdpdKtCFQ6K2e-VfD9JjF"
     },
     {
         id: 2,
@@ -817,8 +843,6 @@ const EXERCISES = [
         <div class="modal-inner">
             <div id="modal-body"></div>
             <div class="modal-actions">
-                <button class="btn btn-yt" onclick="openVideoLink()">▶ 在 YouTube 觀看物理治療師示範</button>
-                <p class="btn-hint">點擊將開啟新分頁</p>
                 <button class="btn btn-close" onclick="closeModal()">關閉視窗</button>
             </div>
         </div>
@@ -882,6 +906,24 @@ const EXERCISES = [
         function openModal(id) {
             const ex = exercises.find(e => e.id === id);
             currentVideoUrl = ex.videoUrl;
+
+            // Build video section: inline embed if embedUrl exists, else YouTube button
+            const videoSection = ex.embedUrl
+                ? `<div class="embed-wrap">
+                       <iframe
+                           id="modal-iframe"
+                           src="${ex.embedUrl}"
+                           title="${ex.title} 示範影片"
+                           frameborder="0"
+                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                           referrerpolicy="strict-origin-when-cross-origin"
+                           allowfullscreen>
+                       </iframe>
+                   </div>
+                   <p class="btn-hint" style="margin-top:0.5rem;">影片由 YouTube 提供</p>`
+                : `<button class="btn btn-yt" onclick="openVideoLink()">▶ 在 YouTube 觀看物理治療師示範</button>
+                   <p class="btn-hint">點擊將開啟新分頁</p>`;
+
             document.getElementById('modal-body').innerHTML = `
                 <div class="modal-header">
                     <h2 id="modal-title">${ex.title}</h2>
@@ -892,6 +934,9 @@ const EXERCISES = [
                 <ul class="modal-steps">
                     ${ex.steps.map(s => `<li>${s}</li>`).join('')}
                 </ul>
+                <div class="modal-video-section">
+                    ${videoSection}
+                </div>
             `;
             document.getElementById('modal-backdrop').classList.add('show');
             document.getElementById('modal-box').classList.add('show');
@@ -903,6 +948,9 @@ const EXERCISES = [
         }
 
         function closeModal() {
+            // Stop iframe playback by blanking src before hiding
+            const iframe = document.getElementById('modal-iframe');
+            if (iframe) iframe.src = '';
             document.getElementById('modal-backdrop').classList.remove('show');
             document.getElementById('modal-box').classList.remove('show');
             document.body.style.overflow = '';
