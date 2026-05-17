@@ -1,0 +1,71 @@
+---
+
+## 肩頸復健中心 — 變更紀錄 (2026/5/7 至今)
+
+### v1 → v2｜功能修復與安全性
+- **YouTube 嵌入替換**：移除直接嵌入 iframe 方案，改為 `youtube.com/results?search_query=` 搜尋連結，解決 CSP / sandbox 環境播放失敗問題
+- **影片連結修正**：移除 Claude 自動產生的虛假 video ID，改為搜尋 URL 避免死連結
+- **評估邏輯修正**：修正「無」選項（第 4 個 checkbox）不應計入危險訊號的邏輯錯誤，`warningCount` 只計算前 3 個選項
+- **visibility 統一**：`quiz-step` 顯示/隱藏全部改用 `classList`，消除 `style.display` 與 `classList.show` 混用導致的衝突
+
+---
+
+### v2 → v3｜效能與無障礙優化
+- **CDN 依賴移除**：Tailwind CSS 從 CDN 載入改為內嵌，消除 ~360KB 阻塞請求
+- **Chart.js 延遲載入**：改為切換至安全指引 tab 時才動態注入 `<script>`，首次載入不下載圖表庫
+- **Google Fonts 移除**：改用系統字體堆疊（PingFang TC / Microsoft JhengHei / Heiti TC），消除 DNS round-trip
+- **基礎字體放大**：`html { font-size: 18px }` 確立為全站基準，符合老年用戶可讀性需求
+- **觸控目標放大**：按鈕、卡片 `min-height` 提升至 48–56px
+- **焦點指示器**：`button:focus-visible` 加上 3px 綠色外框，支援鍵盤導航
+- **Escape 鍵支援**：Modal 開啟時監聽 Escape 關閉
+- **Modal scroll lock**：開啟 modal 時 `body.style.overflow = 'hidden'`，防止背景捲動
+- **日期修正**：頁腳著作權年份更正為 2026
+
+---
+
+### v3 → v4｜YouTube 搜尋關鍵字優化
+全部 6 個 `videoUrl` 搜尋字串更新，加入台灣物治師頻道名稱縮小搜尋範圍：
+
+| 題號 | 新增關鍵字 |
+|---|---|
+| 1 上斜方肌伸展 | 加入 `啾c物理治療師` |
+| 2 頸椎等長收縮 | 加入 `物理治療師 Hunter` |
+| 3 肩胛骨後收 | 改為 `三個字 SunGuts` |
+| 4 胸大肌伸展 | 加入 `啾c物理治療師` |
+| 5 下巴內收 | 改為 `收下巴 烏龜頸 三個字 SunGuts` |
+| 6 熱敷擺位 | 改為 `頸椎 舒適擺位 毛巾` |
+
+---
+
+### v4 → v5｜YouTube Embed 逐步導入（共 6 題）
+YouTube 官方提供的 playlist embed 連結依序替換各題 `videoUrl`，新增 `embedUrl` 欄位：
+
+| 題號 | Playlist ID |
+|---|---|
+| 1 上斜方肌伸展 | `PLILteX10LIgfCdpdKtCFQ6K2e-VfD9JjF` |
+| 2 頸椎等長收縮 | `PLILteX10LIgeCATkrfgkQsvqDg3RPdfAW` |
+| 3 肩胛骨後收 | `PLILteX10LIgceNy8Gkmqs_2OcSAYOnTpg` |
+| 4 胸大肌伸展 | `PLILteX10LIgfypJBTqd5pvL71gF5S2of6` |
+| 5 下巴內收 | `PLILteX10LIge1M90yiQk8KvOuoS91h8Cw` |
+| 6 熱敷擺位 | `PLILteX10LIgc3Xg5yl51r6hGPPcdOhrfS` |
+
+技術細節：
+- `openModal()` 新增分支：有 `embedUrl` 則渲染 iframe，否則顯示 YouTube 搜尋按鈕（向後兼容）
+- `closeModal()` 加入 `iframe.src = ''` 停止背景播放
+- 響應式 16:9 iframe 容器（`padding-bottom: 56.25%`）
+- `&amp;` 正確轉換為 `&`（JS 字串不使用 HTML 實體）
+- 原 `videoUrl` 保留作為備援欄位
+
+---
+
+### v5 → v6｜Code Review 全面修復（本次）
+
+| 優先度 | 項目 | 說明 |
+|---|---|---|
+| 🔴 | `switchTab` 邏輯重寫 | 移除 `onclick` 字串比對，改為 `data-tab` 屬性 + `dataset.tab === tabId` |
+| 🔴 | `openModal` null guard | 加入 `if (!ex) return` 防止資料不同步時崩潰 |
+| 🔴 | 死碼清除 | 移除 `let currentVideoUrl = ''` 全域變數；`openVideoLink(url)` 改為直接傳入參數 |
+| 🟡 | Modal 寬度 | `max-width: 560px` → `720px`，桌面版影片不再被壓縮 |
+| 🟡 | Tab 標籤字體 | `0.625rem`（11px）→ `0.8rem`（14.4px），符合老年用戶最低標準 |
+| 🟡 | 評估 visibility 統一 | `quiz-step` 全改用 `.hidden` class，移除 `style.display` 混用 |
+| 🟡 | 卡片鍵盤無障礙 | `<article>` 加入 `tabindex="0"` + `onkeydown` Enter/Space 觸發 |
