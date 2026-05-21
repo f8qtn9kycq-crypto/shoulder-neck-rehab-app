@@ -5,48 +5,213 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#8D9B6A">
-    <title>肩頸復健指南</title>
+    <meta name="theme-color" content="#5C6B3A">
+    <title>肩頸復健中心</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { font-size: 18px; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
-            background-color: #FDFBF8;
-            color: #4A4A4A;
-            line-height: 1.7;
-            padding-bottom: 72px; /* space for mobile tab bar */
+        /* ── DESIGN TOKENS ──────────────────────────────────────────────
+           Aesthetic: warm ink-and-paper editorial
+           Display:   Noto Serif TC (system, zero CDN cost)
+           Body:      Noto Sans TC / system fallback
+           Palette:   sage #5C6B3A · terracotta #C4623A · parchment #F7F3EC
+           Type borders: 伸展=sage · 肌力=terracotta · 放鬆=warm-blue #5A7A8A
+        ──────────────────────────────────────────────────────────────── */
+        :root {
+            --sage:        #5C6B3A;
+            --sage-mid:    #8D9B6A;
+            --sage-light:  #E8EDE0;
+            --terra:       #C4623A;
+            --terra-light: #F5E8E2;
+            --calm:        #4A7080;
+            --calm-light:  #E0EBF0;
+            --parchment:   #F7F3EC;
+            --ink:         #1E1E1A;
+            --ink-mid:     #3D3D38;
+            --ink-soft:    #5C5C56;
+            --ink-muted:   #8C8C84;
+            --rule:        #D9D4CA;
+            --white:       #FFFFFF;
+            --danger:      #B91C1C;
+            --danger-bg:   #FEF2F2;
+            --danger-border:#FECACA;
+            --success:     #166534;
+            --success-bg:  #F0FDF4;
+            --success-border:#86EFAC;
+            --font-serif:  'Noto Serif TC', 'Georgia', 'Times New Roman', serif;
+            --font-sans:   'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            --radius-sm:   0.5rem;
+            --radius-md:   0.875rem;
+            --radius-lg:   1.25rem;
         }
 
-        /* ── TOP HEADER ─────────────────────────────────── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 18px; }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--parchment);
+            color: var(--ink-mid);
+            line-height: 1.75;
+            padding-bottom: 76px;
+            /* Subtle paper grain */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+        }
+
+        /* ── FIRST-RUN ONBOARDING OVERLAY ───────────────────────────── */
+        #onboarding-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(30,30,26,0.88);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+        }
+        #onboarding-overlay.show { display: flex; align-items: center; justify-content: center; }
+        .onboarding-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            max-width: 520px;
+            width: 100%;
+            padding: 2rem 1.75rem 1.75rem;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.35s cubic-bezier(0.22,1,0.36,1);
+        }
+        .onboarding-kicker {
+            font-family: var(--font-serif);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--sage-mid);
+            margin-bottom: 0.75rem;
+        }
+        .onboarding-card h2 {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+        .onboarding-lead {
+            font-size: 0.9375rem;
+            color: var(--ink-soft);
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        .onboarding-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+            margin-bottom: 1.75rem;
+        }
+        .onboarding-step {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        .step-num {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: var(--sage);
+            color: var(--white);
+            font-family: var(--font-serif);
+            font-weight: 700;
+            font-size: 0.9375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .step-text strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.1rem;
+        }
+        .step-text span { font-size: 0.875rem; color: var(--ink-soft); }
+        .onboarding-actions { display: flex; flex-direction: column; gap: 0.75rem; }
+        .btn-start {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: var(--sage);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 52px;
+            transition: background 0.15s, transform 0.1s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-start:hover { background: #4a5630; }
+        .btn-start:active { transform: scale(0.99); }
+        .btn-skip {
+            width: 100%;
+            padding: 0.75rem;
+            background: none;
+            color: var(--ink-muted);
+            border: none;
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-decoration: underline;
+            min-height: 44px;
+        }
+        .onboarding-aths {
+            margin-top: 1.25rem;
+            padding: 0.875rem 1rem;
+            background: var(--sage-light);
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            color: var(--sage);
+            line-height: 1.55;
+        }
+        .onboarding-aths strong { display: block; font-weight: 700; margin-bottom: 0.2rem; }
+
+        /* ── TOP HEADER ─────────────────────────────────────────────── */
         .app-header {
-            background-color: #8D9B6A;
-            color: white;
+            background: var(--sage);
+            color: var(--white);
             padding: 0.875rem 1.5rem;
             position: sticky;
             top: 0;
             z-index: 40;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 8px rgba(30,30,26,0.18);
+        }
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
         }
         .app-header h1 {
-            font-size: 1.2rem;
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
             font-weight: 700;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.01em;
         }
         .app-header .subtitle {
-            font-size: 0.72rem;
-            opacity: 0.85;
-            margin-top: 0.1rem;
+            font-size: 0.75rem;
+            opacity: 0.8;
+            letter-spacing: 0.03em;
         }
 
-        /* ── DESKTOP TAB BAR ────────────────────────────── */
+        /* ── DESKTOP TAB BAR ────────────────────────────────────────── */
         .tab-bar-desktop {
             display: none;
-            background: white;
-            border-bottom: 2px solid #E5E7EB;
+            background: var(--white);
+            border-bottom: 1.5px solid var(--rule);
             position: sticky;
-            top: 60px;
+            top: 56px;
             z-index: 39;
+            box-shadow: 0 1px 0 var(--rule);
         }
         .tab-bar-desktop .tabs {
             display: flex;
@@ -55,37 +220,37 @@
         }
         .tab-bar-desktop .tab-btn {
             flex: 1;
-            padding: 1rem 1.5rem;
+            padding: 1rem 1.25rem;
             border: none;
             background: none;
-            font-size: 1rem;
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
             font-weight: 600;
-            color: #9CA3AF;
+            color: var(--ink-muted);
             cursor: pointer;
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
-            transition: all 0.2s;
+            border-bottom: 2.5px solid transparent;
+            margin-bottom: -1.5px;
+            transition: color 0.18s, border-color 0.18s;
+            letter-spacing: 0.01em;
         }
         .tab-bar-desktop .tab-btn.active {
-            color: #8D9B6A;
-            border-bottom-color: #8D9B6A;
+            color: var(--sage);
+            border-bottom-color: var(--sage);
         }
         .tab-bar-desktop .tab-btn:hover:not(.active) {
-            color: #4A4A4A;
-            background: #F9FAFB;
+            color: var(--ink-mid);
+            background: var(--parchment);
         }
 
-        /* ── MOBILE BOTTOM TAB BAR ──────────────────────── */
+        /* ── MOBILE BOTTOM TAB BAR ──────────────────────────────────── */
         .tab-bar-mobile {
             display: flex;
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #E5E7EB;
+            bottom: 0; left: 0; right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--rule);
             z-index: 40;
-            box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 -2px 12px rgba(30,30,26,0.07);
             padding-bottom: env(safe-area-inset-bottom);
         }
         .tab-bar-mobile .tab-btn {
@@ -99,23 +264,23 @@
             background: none;
             cursor: pointer;
             gap: 0.15rem;
-            min-height: 56px;
+            min-height: 58px;
             transition: background 0.15s;
             -webkit-tap-highlight-color: transparent;
         }
-        .tab-bar-mobile .tab-btn:active { background: #F3F4F6; }
+        .tab-bar-mobile .tab-btn:active { background: var(--parchment); }
         .tab-icon { font-size: 1.3rem; line-height: 1; }
         .tab-label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            color: #9CA3AF;
+            color: var(--ink-muted);
             letter-spacing: 0.02em;
         }
-        .tab-bar-mobile .tab-btn.active .tab-label { color: #8D9B6A; }
+        .tab-bar-mobile .tab-btn.active .tab-label { color: var(--sage); }
         .tab-dot {
             width: 4px; height: 4px;
             border-radius: 50%;
-            background: #8D9B6A;
+            background: var(--sage);
             opacity: 0;
             transition: opacity 0.2s;
         }
@@ -127,122 +292,159 @@
             .tab-bar-desktop { display: block; }
         }
 
-        /* ── TAB PANELS ─────────────────────────────────── */
+        /* ── TAB PANELS ─────────────────────────────────────────────── */
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* ── SHARED PAGE LAYOUT ─────────────────────────── */
+        /* ── SHARED PAGE LAYOUT ─────────────────────────────────────── */
         .page-section {
             max-width: 900px;
             margin: 0 auto;
-            padding: 1.5rem 1.25rem 2rem;
+            padding: 1.75rem 1.25rem 2.5rem;
         }
-        .page-section h2 {
-            font-size: 1.5rem;
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
             font-weight: 700;
-            color: #1F2937;
-            margin-bottom: 0.3rem;
+            color: var(--ink);
+            margin-bottom: 0.25rem;
+            line-height: 1.25;
         }
         .lead {
-            color: #6B7280;
+            color: var(--ink-soft);
             font-size: 0.9375rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
+            line-height: 1.65;
         }
 
-        /* ── FILTER CHIPS ───────────────────────────────── */
+        /* ── FILTER CHIPS ───────────────────────────────────────────── */
         .filter-row {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
             overflow-x: auto;
             padding-bottom: 0.25rem;
             -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
+        .filter-row::-webkit-scrollbar { display: none; }
         .filter-chip {
             padding: 0.5rem 1.25rem;
             border-radius: 2rem;
-            border: 2px solid #D1D5DB;
-            background: white;
-            color: #6B7280;
+            border: 1.5px solid var(--rule);
+            background: var(--white);
+            color: var(--ink-soft);
             font-size: 0.9375rem;
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
             min-height: 44px;
-            transition: all 0.15s;
+            transition: all 0.18s;
             -webkit-tap-highlight-color: transparent;
         }
+        .filter-chip:hover { border-color: var(--sage-mid); color: var(--sage); }
         .filter-chip.active {
-            background: #8D9B6A;
-            border-color: #8D9B6A;
-            color: white;
+            background: var(--sage);
+            border-color: var(--sage);
+            color: var(--white);
         }
+        /* Type-specific chip active states */
+        .filter-chip[data-type="肌力"].active { background: var(--terra); border-color: var(--terra); }
+        .filter-chip[data-type="放鬆"].active { background: var(--calm); border-color: var(--calm); }
 
-        /* ── EXERCISE GRID ──────────────────────────────── */
+        /* ── EXERCISE GRID ──────────────────────────────────────────── */
         .exercise-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 1rem;
         }
-        @media (min-width: 600px) {
-            .exercise-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (min-width: 900px) {
-            .exercise-grid { grid-template-columns: repeat(3, 1fr); }
-        }
+        @media (min-width: 600px) { .exercise-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 900px) { .exercise-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        /* Cards animate in with stagger — set via JS inline style */
         .exercise-card {
-            background: white;
-            border: 1px solid #E5E7EB;
-            border-radius: 1rem;
-            padding: 1.25rem;
+            background: var(--white);
+            border: 1px solid var(--rule);
+            border-radius: var(--radius-lg);
+            padding: 0 1.25rem 1.25rem;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            transition: transform 0.22s cubic-bezier(0.22,1,0.36,1), box-shadow 0.22s;
+            box-shadow: 0 1px 4px rgba(30,30,26,0.06);
             -webkit-tap-highlight-color: transparent;
+            /* Left rule — color set per type via JS */
+            border-left: 4px solid var(--sage);
+            opacity: 0;
+            transform: translateY(12px);
+            animation: cardIn 0.4s cubic-bezier(0.22,1,0.36,1) forwards;
         }
         .exercise-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(30,30,26,0.12);
         }
         .exercise-card:active { transform: translateY(-1px); }
+
+        /* Type-specific left-border colors */
+        .exercise-card[data-type="肌力"] { border-left-color: var(--terra); }
+        .exercise-card[data-type="放鬆"] { border-left-color: var(--calm); }
+
+        .card-rule-bar {
+            /* Colored top strip matching the left border */
+            height: 3px;
+            margin: 0 -1.25rem 1.25rem;
+            background: var(--sage-light);
+            border-radius: 0;
+        }
+        .exercise-card[data-type="肌力"] .card-rule-bar { background: var(--terra-light); }
+        .exercise-card[data-type="放鬆"] .card-rule-bar { background: var(--calm-light); }
+
         .card-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.625rem;
         }
         .type-badge {
             font-size: 0.72rem;
             font-weight: 700;
+            letter-spacing: 0.08em;
             padding: 0.2rem 0.6rem;
-            border-radius: 0.375rem;
-            background: rgba(141,155,106,0.12);
-            color: #8D9B6A;
+            border-radius: 0.3rem;
+            background: var(--sage-light);
+            color: var(--sage);
+        }
+        .exercise-card[data-type="肌力"] .type-badge {
+            background: var(--terra-light); color: var(--terra);
+        }
+        .exercise-card[data-type="放鬆"] .type-badge {
+            background: var(--calm-light); color: var(--calm);
         }
         .video-tag {
             font-size: 0.75rem;
-            color: #DC2626;
+            color: var(--terra);
             font-weight: 700;
+            opacity: 0.85;
         }
         .exercise-card h3 {
+            font-family: var(--font-serif);
             font-size: 1.125rem;
             font-weight: 700;
-            color: #1F2937;
+            color: var(--ink);
             margin-bottom: 0.375rem;
+            line-height: 1.35;
         }
         .exercise-card p {
-            color: #6B7280;
+            color: var(--ink-soft);
             font-size: 0.875rem;
-            line-height: 1.5;
+            line-height: 1.55;
         }
 
-        /* ── MODAL ──────────────────────────────────────── */
+        /* ── MODAL ──────────────────────────────────────────────────── */
         .modal-backdrop {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(3px);
+            background: rgba(30,30,26,0.6);
+            backdrop-filter: blur(4px);
             z-index: 50;
         }
         .modal-backdrop.show { display: block; }
@@ -262,91 +464,123 @@
             pointer-events: auto;
         }
         .modal-inner {
-            background: white;
-            border-radius: 1rem;
+            background: var(--white);
+            border-radius: var(--radius-lg);
             width: 100%;
             max-width: 720px;
-            padding: 1.5rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            animation: modalIn 0.25s ease;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(30,30,26,0.25);
+            animation: slideUp 0.28s cubic-bezier(0.22,1,0.36,1);
         }
-        @keyframes modalIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
+        .modal-color-bar {
+            height: 5px;
+            background: var(--sage);
         }
+        .modal-color-bar[data-type="肌力"] { background: var(--terra); }
+        .modal-color-bar[data-type="放鬆"] { background: var(--calm); }
+        .modal-content-wrap { padding: 1.5rem; }
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             gap: 1rem;
-            border-bottom: 1px solid #E5E7EB;
+            border-bottom: 1px solid var(--rule);
             padding-bottom: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.125rem;
         }
         .modal-header h2 {
-            font-size: 1.3125rem;
+            font-family: var(--font-serif);
+            font-size: 1.375rem;
             font-weight: 700;
-            color: #1F2937;
+            color: var(--ink);
+            line-height: 1.3;
         }
         .modal-badge {
-            background: #8D9B6A;
-            color: white;
-            padding: 0.25rem 0.6rem;
-            border-radius: 0.375rem;
+            background: var(--sage);
+            color: var(--white);
+            padding: 0.25rem 0.625rem;
+            border-radius: 0.3rem;
             font-size: 0.72rem;
             font-weight: 700;
             flex-shrink: 0;
+            letter-spacing: 0.05em;
         }
+        .modal-badge[data-type="肌力"] { background: var(--terra); }
+        .modal-badge[data-type="放鬆"] { background: var(--calm); }
         .modal-detail {
-            background: #F9FAFB;
-            border: 1px solid #E5E7EB;
-            border-radius: 0.75rem;
+            background: var(--parchment);
+            border-left: 3px solid var(--sage-mid);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
             padding: 0.875rem 1rem;
             margin-bottom: 1.25rem;
             font-size: 0.9375rem;
-            color: #4A4A4A;
+            color: var(--ink-mid);
+            line-height: 1.65;
         }
+        .modal-detail[data-type="肌力"] { border-left-color: var(--terra); }
+        .modal-detail[data-type="放鬆"] { border-left-color: var(--calm); }
         .modal-steps-heading {
+            font-family: var(--font-serif);
             font-weight: 700;
-            border-left: 4px solid #8D9B6A;
-            padding-left: 0.75rem;
-            margin-bottom: 0.875rem;
             font-size: 1rem;
-        }
-        .modal-steps { list-style: none; }
-        .modal-steps li {
+            color: var(--ink);
+            margin-bottom: 0.875rem;
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-            color: #4A4A4A;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .modal-steps-heading::before {
+            content: "";
+            display: block;
+            width: 18px; height: 2px;
+            background: var(--sage-mid);
+        }
+        .modal-steps { list-style: none; counter-reset: steps; }
+        .modal-steps li {
+            counter-increment: steps;
+            display: flex;
+            gap: 0.875rem;
+            margin-bottom: 0.875rem;
+            color: var(--ink-mid);
             font-size: 0.9375rem;
-            line-height: 1.6;
+            line-height: 1.65;
+            align-items: flex-start;
         }
         .modal-steps li::before {
-            content: "•";
-            color: #8D9B6A;
+            content: counter(steps);
+            font-family: var(--font-serif);
             font-weight: 700;
-            font-size: 1.2rem;
-            line-height: 1.2;
+            font-size: 0.875rem;
+            color: var(--white);
+            background: var(--sage);
+            min-width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
+            margin-top: 0.1rem;
         }
         .modal-actions {
             margin-top: 1.25rem;
-            border-top: 1px solid #E5E7EB;
-            padding-top: 1.125rem;
+            border-top: 1px solid var(--rule);
+            padding: 1.125rem 1.5rem 1.5rem;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
         }
         .btn {
             width: 100%;
-            padding: 0.875rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 0.9375rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
             font-weight: 700;
             font-size: 1rem;
             border: none;
             cursor: pointer;
-            min-height: 48px;
+            min-height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -355,31 +589,36 @@
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
-        .btn-yt { background: #CD201F; color: white; }
-        .btn-yt:hover { background: #b91c1b; }
-        .btn-close { background: #F3F4F6; color: #374151; }
-        .btn-close:hover { background: #E5E7EB; }
+        .btn-yt { background: #CC0000; color: white; }
+        .btn-yt:hover { background: #aa0000; }
+        .btn-close {
+            background: var(--parchment);
+            color: var(--ink-mid);
+            border: 1px solid var(--rule);
+        }
+        .btn-close:hover { background: var(--sage-light); }
         .btn-hint {
             text-align: center;
             font-size: 0.75rem;
-            color: #9CA3AF;
+            color: var(--ink-muted);
         }
 
-        /* ── ASSESSMENT ─────────────────────────────────── */
+        /* ── ASSESSMENT ─────────────────────────────────────────────── */
         .screener-card {
-            background: white;
-            border-radius: 1rem;
-            border: 1px solid #E5E7EB;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--rule);
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 10px rgba(30,30,26,0.07);
         }
         .screener-head {
-            background: #8D9B6A;
-            padding: 1.125rem 1.5rem;
-            color: white;
+            background: var(--sage);
+            padding: 1.25rem 1.5rem;
+            color: var(--white);
         }
         .screener-head h3 {
-            font-size: 1.0625rem;
+            font-family: var(--font-serif);
+            font-size: 1.125rem;
             font-weight: 700;
             margin-bottom: 0.2rem;
         }
@@ -389,86 +628,93 @@
             display: flex;
             align-items: flex-start;
             gap: 1rem;
-            padding: 0.875rem 1rem;
-            border: 1px solid #E5E7EB;
-            border-radius: 0.75rem;
+            padding: 1rem 1.125rem;
+            border: 1.5px solid var(--rule);
+            border-radius: var(--radius-md);
             margin-bottom: 0.75rem;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: background 0.15s, border-color 0.15s;
+            background: var(--white);
         }
-        .checkbox-row:hover { background: #F9FAFB; }
+        .checkbox-row:hover { background: var(--parchment); border-color: var(--sage-mid); }
         .checkbox-row input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
+            width: 24px; height: 24px;
             flex-shrink: 0;
-            margin-top: 0.15rem;
+            margin-top: 0.1rem;
             cursor: pointer;
-            accent-color: #8D9B6A;
+            accent-color: var(--sage);
         }
         .label-main {
             display: block;
             font-weight: 700;
-            color: #1F2937;
+            color: var(--ink);
             font-size: 1rem;
+            margin-bottom: 0.15rem;
         }
-        .label-sub {
-            font-size: 0.875rem;
-            color: #6B7280;
-        }
+        .label-sub { font-size: 0.875rem; color: var(--ink-soft); line-height: 1.5; }
         .btn-assess {
             width: 100%;
             margin-top: 0.25rem;
-            padding: 1rem;
-            background: #1F2937;
-            color: white;
+            padding: 1.0625rem;
+            background: var(--ink);
+            color: var(--white);
             border: none;
-            border-radius: 0.75rem;
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            min-height: 52px;
+            min-height: 54px;
             transition: background 0.15s;
+            letter-spacing: 0.02em;
         }
-        .btn-assess:hover { background: #111827; }
+        .btn-assess:hover { background: var(--ink-mid); }
         .result-box {
             display: none;
             padding: 1.5rem;
-            border-radius: 0.75rem;
+            border-radius: var(--radius-md);
             text-align: center;
         }
         .result-box.show { display: block; }
-        .result-box h4 { font-size: 1.4rem; margin-bottom: 0.5rem; }
-        .result-box p { font-weight: 600; font-size: 0.9375rem; }
+        .result-box h4 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .result-box p { font-weight: 600; font-size: 0.9375rem; line-height: 1.6; }
         .result-box.success {
-            background: #F0FDF4;
-            border: 2px solid #86EFAC;
-            color: #166534;
+            background: var(--success-bg);
+            border: 2px solid var(--success-border);
+            color: var(--success);
         }
         .result-box.danger {
-            background: #FEF2F2;
-            border: 2px solid #FECACA;
-            color: #991B1B;
+            background: var(--danger-bg);
+            border: 2px solid var(--danger-border);
+            color: var(--danger);
         }
         .btn-reset {
             margin-top: 1rem;
             background: none;
             border: none;
             font-size: 0.875rem;
-            color: #6B7280;
+            color: var(--ink-muted);
             text-decoration: underline;
             cursor: pointer;
+            min-height: 44px;
         }
 
-        /* ── SAFETY TAB ─────────────────────────────────── */
+        /* ── SAFETY TAB ─────────────────────────────────────────────── */
         .warning-banner {
-            background: #FEF2F2;
-            border: 2px solid #FECACA;
-            border-radius: 1rem;
+            background: var(--danger-bg);
+            border: 1.5px solid var(--danger-border);
+            border-left: 4px solid var(--danger);
+            border-radius: var(--radius-md);
             padding: 1.25rem 1.5rem;
             margin-bottom: 1.25rem;
         }
         .warning-banner h3 {
-            color: #DC2626;
+            font-family: var(--font-serif);
+            color: var(--danger);
             font-size: 1.0625rem;
             font-weight: 700;
             margin-bottom: 0.875rem;
@@ -476,12 +722,13 @@
         .warning-list { list-style: none; }
         .warning-list li {
             display: flex;
-            gap: 0.6rem;
-            color: #991B1B;
+            gap: 0.625rem;
+            color: #7F1D1D;
             font-weight: 600;
             font-size: 0.9375rem;
-            margin-bottom: 0.6rem;
-            line-height: 1.5;
+            margin-bottom: 0.625rem;
+            line-height: 1.55;
+            align-items: flex-start;
         }
         .warning-list li::before {
             content: "⛔";
@@ -490,37 +737,41 @@
             margin-top: 0.1rem;
         }
         .info-card {
-            background: white;
-            border: 1px solid #E5E7EB;
-            border-radius: 1rem;
-            padding: 1.25rem 1.5rem;
+            background: var(--white);
+            border: 1px solid var(--rule);
+            border-radius: var(--radius-lg);
+            padding: 1.375rem 1.5rem;
             margin-bottom: 1.125rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 4px rgba(30,30,26,0.05);
         }
         .info-card h3 {
+            font-family: var(--font-serif);
             font-size: 1.0625rem;
             font-weight: 700;
-            color: #1F2937;
+            color: var(--ink);
             margin-bottom: 0.875rem;
         }
         .info-card p {
-            color: #4A4A4A;
+            color: var(--ink-mid);
             font-size: 0.9375rem;
-            line-height: 1.7;
+            line-height: 1.75;
             margin-bottom: 0.75rem;
         }
         .benefit-item {
             display: flex;
             align-items: flex-start;
-            gap: 0.875rem;
+            gap: 1rem;
             margin-bottom: 0.875rem;
+            padding: 0.75rem 1rem;
+            background: var(--parchment);
+            border-radius: var(--radius-sm);
         }
         .benefit-num {
-            width: 1.875rem;
-            height: 1.875rem;
+            width: 2rem; height: 2rem;
             border-radius: 50%;
-            background: rgba(141,155,106,0.15);
-            color: #8D9B6A;
+            background: var(--sage);
+            color: var(--white);
+            font-family: var(--font-serif);
             font-weight: 700;
             font-size: 0.875rem;
             display: flex;
@@ -531,8 +782,9 @@
         .benefit-text {
             font-size: 0.9375rem;
             font-weight: 600;
-            color: #333;
-            padding-top: 0.2rem;
+            color: var(--ink-mid);
+            padding-top: 0.25rem;
+            line-height: 1.5;
         }
         .chart-wrap {
             position: relative;
@@ -542,41 +794,50 @@
         .footer-note {
             text-align: center;
             font-size: 0.75rem;
-            color: #9CA3AF;
-            margin-top: 1.5rem;
+            color: var(--ink-muted);
+            margin-top: 2rem;
             padding-bottom: 0.5rem;
+            line-height: 1.6;
         }
 
-        /* ── EMBED IFRAME ───────────────────────────────── */
+        /* ── EMBED IFRAME ───────────────────────────────────────────── */
         .modal-video-section {
             margin-top: 1.25rem;
-            border-top: 1px solid #E5E7EB;
+            border-top: 1px solid var(--rule);
             padding-top: 1rem;
         }
-        /* 16:9 responsive container */
         .embed-wrap {
             position: relative;
             width: 100%;
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            border-radius: 0.75rem;
+            border-radius: var(--radius-md);
             background: #000;
         }
         .embed-wrap iframe {
             position: absolute;
             top: 0; left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             border: 0;
-            border-radius: 0.75rem;
+            border-radius: var(--radius-md);
         }
 
-        /* ── A11Y ───────────────────────────────────────── */
+        /* ── ANIMATIONS ─────────────────────────────────────────────── */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── A11Y ───────────────────────────────────────────────────── */
         .hidden { display: none !important; }
         button:focus-visible,
         input:focus-visible {
-            outline: 3px solid #8D9B6A;
+            outline: 3px solid var(--sage);
             outline-offset: 2px;
         }
         @media (prefers-reduced-motion: reduce) {
@@ -591,9 +852,9 @@
 <!-- =====================================================================
      EXERCISE DATA
      To add a new exercise: copy any block below, increment the id,
-     set type to "伸展" | "肌力" | "放鬆", fill in the fields, save.
-     The UI (grid, filter chips, modal) updates automatically.
-     videoUrl: use a YouTube search URL — avoids broken embed IDs.
+     set type to "伸展" | "肌力" | "放鬆"
+     joint: field is required — used by dashboard tracking (Phase 2)
+     videoUrl: YouTube search URL — always functional, never broken
      ===================================================================== -->
 <script>
 const EXERCISES = [
@@ -601,6 +862,7 @@ const EXERCISES = [
         id: 1,
         title: "上斜方肌伸展",
         type: "伸展",
+        joint: "肩頸",
         desc: "放鬆緊繃的肩頸交界處。",
         detail: "這動作能有效緩解因久坐導致的「聳肩」問題。",
         steps: [
@@ -616,6 +878,7 @@ const EXERCISES = [
         id: 2,
         title: "頸椎等長收縮",
         type: "肌力",
+        joint: "肩頸",
         desc: "增加頸椎穩定性，不產生關節負擔。",
         detail: "適合初期疼痛期使用，能建立肌肉基礎力量。",
         steps: [
@@ -631,6 +894,7 @@ const EXERCISES = [
         id: 3,
         title: "肩胛骨後收",
         type: "肌力",
+        joint: "肩頸",
         desc: "矯正圓肩，強化背部。",
         detail: "改善「電腦族」最常見的姿勢性問題。",
         steps: [
@@ -646,6 +910,7 @@ const EXERCISES = [
         id: 4,
         title: "胸大肌伸展",
         type: "伸展",
+        joint: "肩頸",
         desc: "拉開前側緊繃，改善呼吸。",
         detail: "胸部過緊會將肩膀往前拉，導致後頸壓力過大。",
         steps: [
@@ -659,8 +924,9 @@ const EXERCISES = [
     },
     {
         id: 5,
-        title: "下巴內收 (Chin Tuck)",
+        title: "下巴內收（Chin Tuck）",
         type: "放鬆",
+        joint: "肩頸",
         desc: "矯正烏龜頸的黃金動作。",
         detail: "這是治療頸椎退化最重要的運動之一。",
         steps: [
@@ -675,10 +941,11 @@ const EXERCISES = [
         id: 6,
         title: "熱敷與放鬆擺位",
         type: "放鬆",
+        joint: "肩頸",
         desc: "促進血液循環，緩解急性緊繃。",
         detail: "在睡前進行可有效改善因壓力導致的肌肉僵硬。",
         steps: [
-            "使用40-45度溫熱毛巾或電熱毯",
+            "使用40–45度溫熱毛巾或電熱毯",
             "覆蓋於肩頸部15分鐘",
             "平躺於硬床，頸部墊一捲小毛巾支撐弧度"
         ],
@@ -690,370 +957,441 @@ const EXERCISES = [
 
 <body>
 
-    <!-- App Header -->
-    <header class="app-header">
+<!-- ── FIRST-RUN ONBOARDING OVERLAY ─────────────────────────────── -->
+<div id="onboarding-overlay" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+    <div class="onboarding-card">
+        <p class="onboarding-kicker">居家復健指南</p>
+        <h2 id="onboarding-title">開始之前，<br>了解三個步驟</h2>
+        <p class="onboarding-lead">這個應用與 YouTube 搜尋的差別：每個動作都經物理治療師篩選，並透過安全機制保護您的關節健康。</p>
+        <div class="onboarding-steps">
+            <div class="onboarding-step">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                    <strong>閱讀安全指引</strong>
+                    <span>了解哪些症狀需要先就醫，再進行居家復健。</span>
+                </div>
+            </div>
+            <div class="onboarding-step">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                    <strong>完成自我評估</strong>
+                    <span>四個問題確認您目前是否適合自行運動。</span>
+                </div>
+            </div>
+            <div class="onboarding-step">
+                <div class="step-num">3</div>
+                <div class="step-text">
+                    <strong>選擇運動開始訓練</strong>
+                    <span>依類型篩選，點擊卡片查看步驟與影片示範。</span>
+                </div>
+            </div>
+        </div>
+        <div class="onboarding-actions">
+            <button class="btn-start" onclick="dismissOnboarding(false)">了解了，開始使用 →</button>
+            <button class="btn-skip" onclick="dismissOnboarding(true)">跳過，直接進入</button>
+        </div>
+        <div class="onboarding-aths">
+            <strong>💡 建議：加入手機主畫面</strong>
+            iOS：點擊 Safari 下方「分享」→「加入主畫面」，可防止資料遺失並提供完整離線體驗。
+        </div>
+    </div>
+</div>
+
+<!-- App Header -->
+<header class="app-header">
+    <div class="header-inner">
         <h1>肩頸復健中心</h1>
-        <div class="subtitle">居家復健指南 ‧ 影音教學輔助</div>
-    </header>
+        <span class="subtitle">居家復健指南 · 影音教學輔助</span>
+    </div>
+</header>
 
-    <!-- Desktop tab bar -->
-    <nav class="tab-bar-desktop" aria-label="主選單">
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="safety" onclick="switchTab('safety', this)">📋 安全指引</button>
-            <button class="tab-btn" data-tab="assessment" onclick="switchTab('assessment', this)">✅ 自我評估</button>
-            <button class="tab-btn" data-tab="exercises" onclick="switchTab('exercises', this)">🏃 復健運動</button>
-        </div>
-    </nav>
+<!-- Desktop tab bar -->
+<nav class="tab-bar-desktop" aria-label="主選單">
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="safety" onclick="switchTab('safety')">📋 安全指引</button>
+        <button class="tab-btn" data-tab="assessment" onclick="switchTab('assessment')">✅ 自我評估</button>
+        <button class="tab-btn" data-tab="exercises" onclick="switchTab('exercises')">🏃 復健運動</button>
+    </div>
+</nav>
 
-    <main>
+<main>
 
-        <!-- ── TAB 1: EXERCISES ──────────────────────────── -->
-        <div id="tab-exercises" class="tab-panel" role="tabpanel" aria-label="復健運動">
-            <div class="page-section">
-                <h2>復健運動庫</h2>
-                <p class="lead">點擊卡片查看步驟與影片教學。</p>
-                <div class="filter-row" role="group" aria-label="類型篩選">
-                    <button class="filter-chip active" data-type="all">全部</button>
-                    <button class="filter-chip" data-type="伸展">伸展</button>
-                    <button class="filter-chip" data-type="肌力">肌力</button>
-                    <button class="filter-chip" data-type="放鬆">放鬆</button>
-                </div>
-                <div id="exercise-grid" class="exercise-grid"></div>
+    <!-- ── TAB: SAFETY ───────────────────────────────────────────── -->
+    <div id="tab-safety" class="tab-panel active" role="tabpanel" aria-label="安全指引">
+        <div class="page-section">
+            <h2 class="page-title">安全指引</h2>
+            <p class="lead">運動前後請仔細閱讀以下注意事項。</p>
+
+            <div class="warning-banner">
+                <h3>⚠️ 出現以下狀況請立即停止</h3>
+                <ul class="warning-list">
+                    <li>運動時產生劇烈刺痛感</li>
+                    <li>手部麻木感擴散至指尖</li>
+                    <li>出現嚴重頭暈或視力模糊</li>
+                    <li>關節處有異常的卡住感或腫脹</li>
+                </ul>
             </div>
-        </div>
 
-        <!-- ── TAB 2: ASSESSMENT ─────────────────────────── -->
-        <div id="tab-assessment" class="tab-panel" role="tabpanel" aria-label="自我評估">
-            <div class="page-section">
-                <h2>自我評估</h2>
-                <p class="lead">開始運動前，先完成這份快速篩檢確認您的狀況。</p>
-                <div class="screener-card">
-                    <div class="screener-head">
-                        <h3>快速安全篩檢 (Screener)</h3>
-                        <p>請勾選是否有以下症狀：</p>
-                    </div>
-                    <div class="screener-body">
-                        <div id="quiz-step">
-                            <label class="checkbox-row">
-                                <input type="checkbox" class="red-flag">
-                                <div>
-                                    <span class="label-main">神經症狀</span>
-                                    <span class="label-sub">手臂明顯發麻、無力或有觸電感</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-row">
-                                <input type="checkbox" class="red-flag">
-                                <div>
-                                    <span class="label-main">劇烈疼痛</span>
-                                    <span class="label-sub">靜止時也劇痛、無法入眠或輕觸即痛</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-row">
-                                <input type="checkbox" class="red-flag">
-                                <div>
-                                    <span class="label-main">其他警訊</span>
-                                    <span class="label-sub">伴隨發燒、頭暈、噁心或近期嚴重外傷史</span>
-                                </div>
-                            </label>
-                            <label class="checkbox-row">
-                                <input type="checkbox" class="red-flag">
-                                <div>
-                                    <span class="label-main">無</span>
-                                    <span class="label-sub">我沒有上述任何症狀，可以開始運動</span>
-                                </div>
-                            </label>
-                            <button class="btn-assess" onclick="checkAssessment()">確認評估結果</button>
-                        </div>
-                        <div id="quiz-result" class="result-box">
-                            <div id="result-text"></div>
-                            <button class="btn-reset" onclick="resetAssessment()">重新評估</button>
-                        </div>
-                    </div>
+            <div class="info-card">
+                <h3>📌 重要提醒</h3>
+                <p>居家復健屬於輔助性質，若影片教學與您的感受有落差，或症狀持續超過二週未改善，請務必尋求物理治療師進行一對一評估，確保動作正確性。</p>
+            </div>
+
+            <div class="info-card">
+                <h3>💡 為什麼運動比休息更有效？</h3>
+                <p>根據物理治療研究，長期維持固定姿勢會導致局部血液循環不良與肌肉廢用性萎縮。規律的訓練能增加肌肉耐受力，並重新建立正確的神經肌肉控制。</p>
+                <div class="benefit-item">
+                    <div class="benefit-num">1</div>
+                    <div class="benefit-text">改善血液循環，排除發炎物質</div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-num">2</div>
+                    <div class="benefit-text">強化深層肌群，支撐頸椎結構</div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-num">3</div>
+                    <div class="benefit-text">調整關節活動度，減少骨刺生成風險</div>
                 </div>
             </div>
-        </div>
 
-        <!-- ── TAB 3: SAFETY ─────────────────────────────── -->
-        <div id="tab-safety" class="tab-panel active" role="tabpanel" aria-label="安全指引">
-            <div class="page-section">
-                <h2>安全指引</h2>
-                <p class="lead">運動前後請仔細閱讀以下注意事項。</p>
-
-                <div class="warning-banner">
-                    <h3>⚠️ 出現以下狀況請立即停止</h3>
-                    <ul class="warning-list">
-                        <li>運動時產生劇烈刺痛感</li>
-                        <li>手部麻木感擴散至指尖</li>
-                        <li>出現嚴重頭暈或視力模糊</li>
-                        <li>關節處有異常的卡住感或腫脹</li>
-                    </ul>
+            <div class="info-card">
+                <h3>📊 預期恢復成效分析</h3>
+                <div class="chart-wrap">
+                    <canvas id="recoveryChart"></canvas>
                 </div>
-
-                <div class="info-card">
-                    <h3>📌 重要提醒</h3>
-                    <p>居家復健屬於輔助性質，若影片教學與您的感受有落差，或症狀持續超過二週未改善，請務必尋求物理治療師進行一對一評估，確保動作正確性。</p>
-                </div>
-
-                <div class="info-card">
-                    <h3>💡 為什麼運動比休息更有效？</h3>
-                    <p>根據物理治療研究，長期維持固定姿勢會導致局部血液循環不良與肌肉廢用性萎縮。規律的訓練能增加肌肉耐受力，並重新建立正確的神經肌肉控制。</p>
-                    <div class="benefit-item">
-                        <div class="benefit-num">1</div>
-                        <div class="benefit-text">改善血液循環，排除發炎物質</div>
-                    </div>
-                    <div class="benefit-item">
-                        <div class="benefit-num">2</div>
-                        <div class="benefit-text">強化深層肌群，支撐頸椎結構</div>
-                    </div>
-                    <div class="benefit-item">
-                        <div class="benefit-num">3</div>
-                        <div class="benefit-text">調整關節活動度，減少骨刺生成風險</div>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <h3>📊 預期恢復成效分析</h3>
-                    <div class="chart-wrap">
-                        <canvas id="recoveryChart"></canvas>
-                    </div>
-                </div>
-
-                <p class="footer-note">&copy; 2026 肩頸復健中心 ‧ 此內容僅供教育參考，不具醫療診斷效力。</p>
             </div>
+
+            <p class="footer-note">© 2026 肩頸復健中心 · 此內容僅供教育參考，不具醫療診斷效力。</p>
         </div>
+    </div>
 
-    </main>
-
-    <!-- Mobile bottom tab bar -->
-    <nav class="tab-bar-mobile" aria-label="主選單">
-        <button class="tab-btn active" data-tab="safety" onclick="switchTab('safety', this)">
-            <span class="tab-icon">📋</span>
-            <span class="tab-label">安全指引</span>
-            <span class="tab-dot"></span>
-        </button>
-        <button class="tab-btn" data-tab="assessment" onclick="switchTab('assessment', this)">
-            <span class="tab-icon">✅</span>
-            <span class="tab-label">自我評估</span>
-            <span class="tab-dot"></span>
-        </button>
-        <button class="tab-btn" data-tab="exercises" onclick="switchTab('exercises', this)">
-            <span class="tab-icon">🏃</span>
-            <span class="tab-label">復健運動</span>
-            <span class="tab-dot"></span>
-        </button>
-    </nav>
-
-    <!-- Modal -->
-    <div id="modal-backdrop" class="modal-backdrop" onclick="closeModal()"></div>
-    <div id="modal-box" class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div class="modal-inner">
-            <div id="modal-body"></div>
-            <div class="modal-actions">
-                <button class="btn btn-close" onclick="closeModal()">關閉視窗</button>
+    <!-- ── TAB: ASSESSMENT ───────────────────────────────────────── -->
+    <div id="tab-assessment" class="tab-panel" role="tabpanel" aria-label="自我評估">
+        <div class="page-section">
+            <h2 class="page-title">自我評估</h2>
+            <p class="lead">開始運動前，先完成這份快速篩檢確認您的狀況。</p>
+            <div class="screener-card">
+                <div class="screener-head">
+                    <h3>快速安全篩檢</h3>
+                    <p>請勾選是否有以下症狀：</p>
+                </div>
+                <div class="screener-body">
+                    <div id="quiz-step">
+                        <label class="checkbox-row">
+                            <input type="checkbox" class="red-flag">
+                            <div>
+                                <span class="label-main">神經症狀</span>
+                                <span class="label-sub">手臂明顯發麻、無力或有觸電感</span>
+                            </div>
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" class="red-flag">
+                            <div>
+                                <span class="label-main">劇烈疼痛</span>
+                                <span class="label-sub">靜止時也劇痛、無法入眠或輕觸即痛</span>
+                            </div>
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" class="red-flag">
+                            <div>
+                                <span class="label-main">其他警訊</span>
+                                <span class="label-sub">伴隨發燒、頭暈、噁心或近期嚴重外傷史</span>
+                            </div>
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" class="red-flag">
+                            <div>
+                                <span class="label-main">無</span>
+                                <span class="label-sub">我沒有上述任何症狀，可以開始運動</span>
+                            </div>
+                        </label>
+                        <button class="btn-assess" onclick="checkAssessment()">確認評估結果</button>
+                    </div>
+                    <div id="quiz-result" class="result-box">
+                        <div id="result-text"></div>
+                        <button class="btn-reset" onclick="resetAssessment()">重新評估</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // ── DATA ─────────────────────────────────────────────────────
-        // Exercise data lives in the <script> block at the top of this
-        // file (just after </head>) — edit there to add/change exercises.
-        const exercises = EXERCISES;
+    <!-- ── TAB: EXERCISES ────────────────────────────────────────── -->
+    <div id="tab-exercises" class="tab-panel" role="tabpanel" aria-label="復健運動">
+        <div class="page-section">
+            <h2 class="page-title">復健運動庫</h2>
+            <p class="lead">點擊卡片查看步驟與影片教學。</p>
+            <div class="filter-row" role="group" aria-label="類型篩選">
+                <button class="filter-chip active" data-type="all">全部</button>
+                <button class="filter-chip" data-type="伸展">伸展</button>
+                <button class="filter-chip" data-type="肌力">肌力</button>
+                <button class="filter-chip" data-type="放鬆">放鬆</button>
+            </div>
+            <div id="exercise-grid" class="exercise-grid"></div>
+        </div>
+    </div>
 
-        // ── TAB SWITCHING ─────────────────────────────────────────────
-        // Uses data-tab attribute on buttons — no fragile string-sniffing.
-        function switchTab(tabId) {
-            // Hide all panels, show target
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
+</main>
 
-            // Sync both desktop + mobile bars via data-tab
-            document.querySelectorAll('[data-tab]').forEach(b => {
-                b.classList.toggle('active', b.dataset.tab === tabId);
-            });
+<!-- Mobile bottom tab bar -->
+<nav class="tab-bar-mobile" aria-label="主選單">
+    <button class="tab-btn active" data-tab="safety" onclick="switchTab('safety')">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">安全指引</span>
+        <span class="tab-dot"></span>
+    </button>
+    <button class="tab-btn" data-tab="assessment" onclick="switchTab('assessment')">
+        <span class="tab-icon">✅</span>
+        <span class="tab-label">自我評估</span>
+        <span class="tab-dot"></span>
+    </button>
+    <button class="tab-btn" data-tab="exercises" onclick="switchTab('exercises')">
+        <span class="tab-icon">🏃</span>
+        <span class="tab-label">復健運動</span>
+        <span class="tab-dot"></span>
+    </button>
+</nav>
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+<!-- Modal -->
+<div id="modal-backdrop" class="modal-backdrop" onclick="closeModal()"></div>
+<div id="modal-box" class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-inner">
+        <div id="modal-color-bar" class="modal-color-bar"></div>
+        <div class="modal-content-wrap">
+            <div id="modal-body"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-close" onclick="closeModal()">關閉視窗</button>
+        </div>
+    </div>
+</div>
 
-            // Lazy-load chart only when safety tab first opens
-            if (tabId === 'safety' && !window.chartLoaded) loadChart();
+<script>
+    const exercises = EXERCISES;
+
+    // ── ONBOARDING ────────────────────────────────────────────────
+    function checkOnboarding() {
+        try {
+            if (!localStorage.getItem('pt_onboarded')) {
+                document.getElementById('onboarding-overlay').classList.add('show');
+            }
+        } catch(e) {
+            // localStorage unavailable (private mode) — just don't show overlay
         }
+    }
+    function dismissOnboarding(skip) {
+        try { localStorage.setItem('pt_onboarded', '1'); } catch(e) {}
+        document.getElementById('onboarding-overlay').classList.remove('show');
+        if (!skip) switchTab('safety');
+    }
 
-        // ── EXERCISES ─────────────────────────────────────────────────
-        function renderExercises(filter) {
-            const items = (!filter || filter === 'all')
-                ? exercises
-                : exercises.filter(e => e.type === filter);
-            // Fix 8: tabindex + keydown make cards keyboard-accessible for elder users
-            document.getElementById('exercise-grid').innerHTML = items.map(ex => `
-                <article class="exercise-card"
-                    tabindex="0"
-                    onclick="openModal(${ex.id})"
-                    onkeydown="if(event.key==='Enter'||event.key===' ')openModal(${ex.id})">
-                    <div class="card-top">
-                        <span class="type-badge">${ex.type}</span>
-                        <span class="video-tag">▶ 影片</span>
-                    </div>
-                    <h3>${ex.title}</h3>
-                    <p>${ex.desc}</p>
-                </article>
-            `).join('');
-        }
-
-        document.querySelectorAll('.filter-chip').forEach(chip => {
-            chip.addEventListener('click', function () {
-                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-                renderExercises(this.dataset.type);
-            });
+    // ── TAB SWITCHING ─────────────────────────────────────────────
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.add('active');
+        document.querySelectorAll('[data-tab]').forEach(b => {
+            b.classList.toggle('active', b.dataset.tab === tabId);
         });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (tabId === 'safety' && !window.chartLoaded) loadChart();
+        if (tabId === 'exercises') reanimateCards();
+    }
 
-        // ── MODAL ─────────────────────────────────────────────────────
-        function openModal(id) {
-            // Fix: null guard — safe if data array and rendered cards ever diverge
-            const ex = exercises.find(e => e.id === id);
-            if (!ex) return;
+    // ── EXERCISES ─────────────────────────────────────────────────
+    const TYPE_COLORS = { '伸展': 'var(--sage)', '肌力': 'var(--terra)', '放鬆': 'var(--calm)' };
 
-            // Build video section: inline embed if embedUrl exists, else YouTube button
-            // Note: videoUrl is retained in data as fallback for any future exercise
-            // added without an embed. openVideoLink() below handles that case.
-            const videoSection = ex.embedUrl
-                ? `<div class="embed-wrap">
-                       <iframe
-                           id="modal-iframe"
-                           src="${ex.embedUrl}"
-                           title="${ex.title} 示範影片"
-                           frameborder="0"
-                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                           referrerpolicy="strict-origin-when-cross-origin"
-                           allowfullscreen>
-                       </iframe>
-                   </div>
-                   <p class="btn-hint" style="margin-top:0.5rem;">影片由 YouTube 提供</p>`
-                : `<button class="btn btn-yt" onclick="openVideoLink('${ex.videoUrl}')">▶ 在 YouTube 觀看物理治療師示範</button>
-                   <p class="btn-hint">點擊將開啟新分頁</p>`;
-
-            document.getElementById('modal-body').innerHTML = `
-                <div class="modal-header">
-                    <h2 id="modal-title">${ex.title}</h2>
-                    <span class="modal-badge">${ex.type}</span>
+    function renderExercises(filter) {
+        const items = (!filter || filter === 'all')
+            ? exercises
+            : exercises.filter(e => e.type === filter);
+        document.getElementById('exercise-grid').innerHTML = items.map((ex, i) => `
+            <article class="exercise-card"
+                data-type="${ex.type}"
+                tabindex="0"
+                style="animation-delay:${i * 0.06}s"
+                onclick="openModal(${ex.id})"
+                onkeydown="if(event.key==='Enter'||event.key===' ')openModal(${ex.id})">
+                <div class="card-rule-bar"></div>
+                <div class="card-top">
+                    <span class="type-badge">${ex.type}</span>
+                    <span class="video-tag">▶ 影片</span>
                 </div>
-                <div class="modal-detail">${ex.detail}</div>
-                <p class="modal-steps-heading">執行步驟</p>
-                <ul class="modal-steps">
-                    ${ex.steps.map(s => `<li>${s}</li>`).join('')}
-                </ul>
-                <div class="modal-video-section">
-                    ${videoSection}
-                </div>
+                <h3>${ex.title}</h3>
+                <p>${ex.desc}</p>
+            </article>
+        `).join('');
+    }
+
+    function reanimateCards() {
+        document.querySelectorAll('.exercise-card').forEach((c, i) => {
+            c.style.animation = 'none';
+            c.offsetHeight; // force reflow
+            c.style.animation = '';
+            c.style.animationDelay = `${i * 0.06}s`;
+        });
+    }
+
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', function() {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            renderExercises(this.dataset.type);
+        });
+    });
+
+    // ── MODAL ─────────────────────────────────────────────────────
+    function openModal(id) {
+        const ex = exercises.find(e => e.id === id);
+        if (!ex) return;
+
+        // Color bar at top of modal keyed to exercise type
+        const bar = document.getElementById('modal-color-bar');
+        bar.setAttribute('data-type', ex.type);
+
+        const videoSection = ex.embedUrl
+            ? `<div class="embed-wrap">
+                   <iframe id="modal-iframe"
+                       src="${ex.embedUrl}"
+                       title="${ex.title} 示範影片"
+                       frameborder="0"
+                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                       referrerpolicy="strict-origin-when-cross-origin"
+                       allowfullscreen>
+                   </iframe>
+               </div>
+               <p class="btn-hint" style="margin-top:0.5rem;">影片由 YouTube 提供</p>`
+            : `<button class="btn btn-yt" onclick="openVideoLink('${ex.videoUrl}')">▶ 在 YouTube 觀看物理治療師示範</button>
+               <p class="btn-hint">點擊將開啟新分頁</p>`;
+
+        document.getElementById('modal-body').innerHTML = `
+            <div class="modal-header">
+                <h2 id="modal-title">${ex.title}</h2>
+                <span class="modal-badge" data-type="${ex.type}">${ex.type}</span>
+            </div>
+            <div class="modal-detail" data-type="${ex.type}">${ex.detail}</div>
+            <p class="modal-steps-heading">執行步驟</p>
+            <ol class="modal-steps">
+                ${ex.steps.map(s => `<li>${s}</li>`).join('')}
+            </ol>
+            <div class="modal-video-section">${videoSection}</div>
+        `;
+        document.getElementById('modal-backdrop').classList.add('show');
+        document.getElementById('modal-box').classList.add('show');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            const closeBtn = document.querySelector('#modal-box .btn-close');
+            if (closeBtn) closeBtn.focus();
+        }, 80);
+    }
+
+    function closeModal() {
+        const iframe = document.getElementById('modal-iframe');
+        if (iframe) iframe.src = '';
+        document.getElementById('modal-backdrop').classList.remove('show');
+        document.getElementById('modal-box').classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    function openVideoLink(url) {
+        if (url) window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.getElementById('modal-box').classList.contains('show')) closeModal();
+    });
+
+    // ── ASSESSMENT ────────────────────────────────────────────────
+    function checkAssessment() {
+        const allFlags = document.querySelectorAll('.red-flag');
+        let warningCount = 0;
+        for (let i = 0; i < 3; i++) { if (allFlags[i].checked) warningCount++; }
+        document.getElementById('quiz-step').classList.add('hidden');
+        const resultDiv = document.getElementById('quiz-result');
+        const resultText = document.getElementById('result-text');
+        if (warningCount > 0) {
+            resultDiv.className = 'result-box show danger';
+            resultText.innerHTML = `
+                <h4>🚫 建議停止操作</h4>
+                <p>檢測到危險訊號，請務必諮詢物理治療師或醫師，不建議自行進行居家復健。</p>
             `;
-            document.getElementById('modal-backdrop').classList.add('show');
-            document.getElementById('modal-box').classList.add('show');
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => {
-                const closeBtn = document.querySelector('#modal-box .btn-close');
-                if (closeBtn) closeBtn.focus();
-            }, 80);
+        } else {
+            resultDiv.className = 'result-box show success';
+            resultText.innerHTML = `
+                <h4>✅ 安全通過</h4>
+                <p>您可以前往「復健運動」頁面開始基礎運動。若過程中出現不適請立即停止。</p>
+            `;
         }
+    }
 
-        function closeModal() {
-            // Stop iframe playback by blanking src before hiding
-            const iframe = document.getElementById('modal-iframe');
-            if (iframe) iframe.src = '';
-            document.getElementById('modal-backdrop').classList.remove('show');
-            document.getElementById('modal-box').classList.remove('show');
-            document.body.style.overflow = '';
-        }
+    function resetAssessment() {
+        document.querySelectorAll('.red-flag').forEach(i => i.checked = false);
+        document.getElementById('quiz-step').classList.remove('hidden');
+        document.getElementById('quiz-result').className = 'result-box';
+    }
 
-        // Fallback for any future exercise without an embedUrl
-        function openVideoLink(url) {
-            if (url) window.open(url, '_blank', 'noopener,noreferrer');
-        }
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && document.getElementById('modal-box').classList.contains('show')) closeModal();
-        });
-
-        // ── ASSESSMENT ────────────────────────────────────────────────
-        function checkAssessment() {
-            const allFlags = document.querySelectorAll('.red-flag');
-            let warningCount = 0;
-            for (let i = 0; i < 3; i++) {
-                if (allFlags[i].checked) warningCount++;
-            }
-            // Fix: use class-only visibility throughout — no mixing with inline style
-            document.getElementById('quiz-step').classList.add('hidden');
-            const resultDiv = document.getElementById('quiz-result');
-            const resultText = document.getElementById('result-text');
-            if (warningCount > 0) {
-                resultDiv.className = 'result-box show danger';
-                resultText.innerHTML = `
-                    <h4>🚫 建議停止操作</h4>
-                    <p>檢測到危險訊號，請務必諮詢物理治療師或醫師，不建議自行進行居家復健。</p>
-                `;
-            } else {
-                resultDiv.className = 'result-box show success';
-                resultText.innerHTML = `
-                    <h4>✅ 安全通過</h4>
-                    <p>您可以前往「復健運動」頁面開始基礎運動。若過程中出現不適請立即停止。</p>
-                `;
-            }
-            resultDiv.classList.add('show');
-        }
-
-        function resetAssessment() {
-            document.querySelectorAll('.red-flag').forEach(i => i.checked = false);
-            // Fix: class-only — matches checkAssessment, no inline style conflict
-            document.getElementById('quiz-step').classList.remove('hidden');
-            document.getElementById('quiz-result').className = 'result-box';
-        }
-
-        // ── CHART (lazy, only loads when safety tab opened) ───────────
-        function loadChart() {
-            window.chartLoaded = true;
-            const s = document.createElement('script');
-            s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
-            s.onload = () => {
-                const ctx = document.getElementById('recoveryChart');
-                if (!ctx) return;
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['第0週','第2週','第4週','第6週','第8週','第12週'],
-                        datasets: [
-                            {
-                                label: '主動復健 (正確運動)',
-                                data: [10,30,60,85,95,100],
-                                borderColor: '#8D9B6A',
-                                backgroundColor: 'rgba(141,155,106,0.1)',
-                                fill: true, tension: 0.4, borderWidth: 2
-                            },
-                            {
-                                label: '被動復健 (僅休息)',
-                                data: [10,15,20,25,25,30],
-                                borderColor: '#BFAE98',
-                                borderDash: [5,5],
-                                tension: 0.1, borderWidth: 2
-                            }
-                        ]
+    // ── CHART ─────────────────────────────────────────────────────
+    function loadChart() {
+        window.chartLoaded = true;
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+        s.onload = () => {
+            const ctx = document.getElementById('recoveryChart');
+            if (!ctx) return;
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['第0週','第2週','第4週','第6週','第8週','第12週'],
+                    datasets: [
+                        {
+                            label: '主動復健（正確運動）',
+                            data: [10,30,60,85,95,100],
+                            borderColor: '#5C6B3A',
+                            backgroundColor: 'rgba(92,107,58,0.08)',
+                            fill: true, tension: 0.4, borderWidth: 2.5,
+                            pointBackgroundColor: '#5C6B3A',
+                            pointRadius: 4
+                        },
+                        {
+                            label: '被動復健（僅休息）',
+                            data: [10,15,20,25,25,30],
+                            borderColor: '#BFAE98',
+                            borderDash: [5,5],
+                            tension: 0.1, borderWidth: 2,
+                            pointBackgroundColor: '#BFAE98',
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: { mode: 'index', intersect: false },
+                        legend: { labels: { font: { size: 13 }, color: '#3D3D38' } }
                     },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { tooltip: { mode: 'index', intersect: false } },
-                        scales: {
-                            y: { min: 0, max: 100, ticks: { font: { size: 13 } } },
-                            x: { ticks: { font: { size: 13 } } }
+                    scales: {
+                        y: {
+                            min: 0, max: 100,
+                            ticks: { font: { size: 13 }, color: '#5C5C56' },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: {
+                            ticks: { font: { size: 13 }, color: '#5C5C56' },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
                         }
                     }
-                });
-            };
-            document.head.appendChild(s);
-        }
+                }
+            });
+        };
+        document.head.appendChild(s);
+    }
 
-        // ── INIT ──────────────────────────────────────────────────────
-        document.addEventListener('DOMContentLoaded', () => {
-            renderExercises();
-            loadChart(); // safety tab is default, load chart immediately
-        });
-    </script>
+    // ── INIT ──────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        renderExercises();
+        loadChart();
+        checkOnboarding();
+    });
+</script>
 </body>
 </html>
