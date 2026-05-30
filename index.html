@@ -52,7 +52,7 @@
             color: var(--ink-mid);
             line-height: 1.75;
             /* Tab bar height ~58px + 0.25rem gap + safe area */
-            padding-bottom: calc(62px + env(safe-area-inset-bottom));
+            padding-bottom: calc(56px + env(safe-area-inset-bottom));
             /* Subtle paper grain */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
         }
@@ -179,10 +179,8 @@
         .app-header {
             background: var(--sage);
             color: var(--white);
-            /* Push content below notch/status bar on all devices */
-            /* Min clearance: just the notch height + 6px buffer. No decorative top padding. */
-            /* Notch clearance only — no added breathing room, max content space */
-            padding: env(safe-area-inset-top) 1.5rem 0.5rem;
+            /* Top: exact notch clearance only, zero decorative padding */
+            padding: env(safe-area-inset-top) 0 0;
             position: sticky;
             top: 0;
             z-index: 40;
@@ -192,8 +190,10 @@
             max-width: 900px;
             margin: 0 auto;
             display: flex;
-            align-items: baseline;
+            align-items: center;
             gap: 0.75rem;
+            /* All breathing room lives here, not on the outer shell */
+            padding: 0.625rem 1rem;
         }
         .app-header h1 {
             font-family: var(--font-serif);
@@ -214,7 +214,7 @@
             border-bottom: 1.5px solid var(--rule);
             position: sticky;
             /* Matches header height: 0.875rem top + env() + 0.875rem bottom + ~1.25rem content */
-            top: calc(56px + env(safe-area-inset-top, 0px));
+            top: calc(44px + env(safe-area-inset-top, 0px));
             z-index: 39;
             box-shadow: 0 1px 0 var(--rule);
         }
@@ -247,38 +247,34 @@
             background: var(--parchment);
         }
 
-        /* ── MOBILE BOTTOM TAB BAR — Floating Glass Island ─────────── */
+        /* ── MOBILE BOTTOM TAB BAR — iOS Shortcuts style, flush bottom ─ */
         .tab-bar-mobile {
             display: flex;
             position: fixed;
-            /* Fix 3: hug exact bottom edge; 4px gap above home indicator (iOS Shortcuts reference) */
-            bottom: env(safe-area-inset-bottom);
-            margin-bottom: 0.25rem;
+            /* Exact bottom — no breathing gap, same as iOS Shortcuts */
+            bottom: 0;
             left: 1rem;
             right: 1rem;
             z-index: 40;
 
-            /* Fix 2: lower opacity so blur is visible against parchment bg */
+            /* Glass material */
             background: rgba(247, 243, 236, 0.35);
             backdrop-filter: blur(28px) saturate(1.8) brightness(1.04);
             -webkit-backdrop-filter: blur(28px) saturate(1.8) brightness(1.04);
 
-            /* Island shape */
-            border-radius: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.55);
-            border-top: 1.5px solid rgba(255, 255, 255, 0.85);
+            border-radius: 1.5rem 1.5rem 0 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.55);
+            border-left: 1px solid rgba(255, 255, 255, 0.35);
+            border-right: 1px solid rgba(255, 255, 255, 0.35);
 
-            /* Multi-layer floating shadow */
             box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.9),
-                0 2px 4px rgba(30, 30, 26, 0.05),
-                0 8px 24px rgba(30, 30, 26, 0.11),
-                0 24px 52px rgba(30, 30, 26, 0.10);
+                inset 0 1px 0 rgba(255, 255, 255, 0.85),
+                0 -2px 16px rgba(30, 30, 26, 0.08);
 
-            padding: 0.375rem 0.5rem;
-            gap: 0.25rem;
+            /* Zero container padding — buttons own all their own spacing */
+            padding: 0;
+            gap: 0;
 
-            /* Entrance animation */
             animation: tabBarFloat 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
@@ -299,13 +295,14 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 0.5rem 0.375rem;
+            /* Tight top, safe area bottom — zero side padding */
+            padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));
             border: none;
             background: none;
             cursor: pointer;
             gap: 0.2rem;
-            min-height: 52px;
-            border-radius: 1.5rem;
+            min-height: calc(52px + env(safe-area-inset-bottom));
+            border-radius: 1.5rem 1.5rem 0 0;
             position: relative;
             transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
             -webkit-tap-highlight-color: transparent;
@@ -316,8 +313,8 @@
         .tab-bar-mobile .tab-btn::before {
             content: '';
             position: absolute;
-            inset: 0;
-            border-radius: 1.5rem;
+            inset: 0.25rem 0.25rem calc(0.25rem + env(safe-area-inset-bottom));
+            border-radius: 1.25rem;
             background: var(--sage);
             box-shadow:
                 0 2px 8px rgba(92, 107, 58, 0.35),
