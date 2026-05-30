@@ -51,7 +51,7 @@
             background-color: var(--parchment);
             color: var(--ink-mid);
             line-height: 1.75;
-            padding-bottom: calc(90px + env(safe-area-inset-bottom));
+            padding-bottom: calc(76px + env(safe-area-inset-bottom));
             /* Subtle paper grain */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
         }
@@ -179,7 +179,8 @@
             background: var(--sage);
             color: var(--white);
             /* Push content below notch/status bar on all devices */
-            padding: max(1rem, env(safe-area-inset-top)) 1.5rem 0.875rem;
+            /* Min clearance: just the notch height + 6px buffer. No decorative top padding. */
+            padding: calc(env(safe-area-inset-top) + 6px) 1.5rem 0.5rem;
             position: sticky;
             top: 0;
             z-index: 40;
@@ -249,7 +250,9 @@
             display: flex;
             position: fixed;
             /* Fix 3: hug exact bottom edge; breathing room via margin-bottom */
-            bottom: max(0.625rem, env(safe-area-inset-bottom));
+            /* Min clearance: home indicator safe area only + 4px buffer */
+            bottom: env(safe-area-inset-bottom);
+            margin-bottom: 0.25rem;
             margin-bottom: 0.5rem;
             left: 1rem;
             right: 1rem;
