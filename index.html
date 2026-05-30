@@ -179,7 +179,7 @@
             background: var(--sage);
             color: var(--white);
             /* Push content below notch/status bar on all devices */
-            padding: calc(0.875rem + env(safe-area-inset-top)) 1.5rem 0.875rem;
+            padding: max(1rem, env(safe-area-inset-top)) 1.5rem 0.875rem;
             position: sticky;
             top: 0;
             z-index: 40;
@@ -249,8 +249,8 @@
             display: flex;
             position: fixed;
             /* Fix 3: hug exact bottom edge; breathing room via margin-bottom */
-            bottom: env(safe-area-inset-bottom);
-            margin-bottom: 0.625rem;
+            bottom: max(0.625rem, env(safe-area-inset-bottom));
+            margin-bottom: 0.5rem;
             left: 1rem;
             right: 1rem;
             z-index: 40;
