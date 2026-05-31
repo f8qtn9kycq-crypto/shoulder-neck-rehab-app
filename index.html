@@ -52,7 +52,7 @@
             color: var(--ink-mid);
             line-height: 1.75;
             /* Mobile tab bar height + safe area */
-            padding-bottom: calc(54px + env(safe-area-inset-bottom));
+            padding-bottom: calc(64px + env(safe-area-inset-bottom));
             /* Subtle paper grain */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
         }
@@ -146,7 +146,7 @@
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            min-height: 44px;
+            min-height: 52px;
             transition: background 0.15s, transform 0.1s;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
@@ -197,7 +197,7 @@
         }
         .app-header h1 {
             font-family: var(--font-serif);
-            font-size: 1.05rem;
+            font-size: 1.25rem;
             font-weight: 700;
             letter-spacing: -0.01em;
         }
@@ -251,17 +251,17 @@
         .tab-bar-mobile {
             display: flex;
             position: fixed;
-            bottom: calc(env(safe-area-inset-bottom) + 2px);
-            left: 12%;
-            right: 12%;
+            bottom: 0;
+            left: 0;
+            right: 0;
             z-index: 40;
 
             /* Glass material */
-            background: rgba(247, 243, 236, 0.90);
+            background: rgba(247, 243, 236, 0.82);
             backdrop-filter: blur(28px) saturate(1.8) brightness(1.04);
             -webkit-backdrop-filter: blur(28px) saturate(1.8) brightness(1.04);
 
-            border-radius: 1rem 1rem 0 0;
+            border-radius: 1.25rem 1.25rem 0 0;
             border: 0;
             border-top: 1.5px solid rgba(255, 255, 255, 0.85);
 
@@ -270,7 +270,7 @@
                 0 -2px 8px rgba(30, 30, 26, 0.07),
                 0 -8px 24px rgba(30, 30, 26, 0.10);
 
-            padding: 0.1rem 0 0.25rem;
+            padding: 0 0 env(safe-area-inset-bottom);
             gap: 0;
 
             animation: tabBarFloat 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -294,12 +294,12 @@
             align-items: center;
             justify-content: center;
             /* Compact symmetric padding — no safe-area here, shell handles it */
-            padding: 0.35rem 0;
+            padding: 0.5rem 0;
             border: none;
             background: none;
             cursor: pointer;
             gap: 0.2rem;
-            min-height: 44px;
+            min-height: 52px;
             border-radius: 1.5rem;
             position: relative;
             transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -311,15 +311,15 @@
         .tab-bar-mobile .tab-btn::before {
             content: '';
             position: absolute;
-            inset: 0.2rem;
-            border-radius: 0.9rem;
+            inset: 0.25rem;
+            border-radius: 1.25rem;
             background: var(--sage);
             box-shadow:
                 0 2px 8px rgba(92, 107, 58, 0.35),
                 0 4px 16px rgba(92, 107, 58, 0.20),
                 inset 0 1px 0 rgba(255,255,255,0.18);
             opacity: 0;
-            transform: scale(0.86);
+            transform: scale(0.82);
             transition:
                 opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1),
                 transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -335,7 +335,7 @@
         }
 
         .tab-icon {
-            font-size: 1.05rem;
+            font-size: 1.25rem;
             line-height: 1;
             position: relative;
             z-index: 1;
@@ -346,7 +346,7 @@
         }
 
         .tab-label {
-            font-size: 0.62rem;
+            font-size: 0.6875rem;
             font-weight: 600;
             color: var(--ink-muted);
             letter-spacing: 0.02em;
@@ -655,7 +655,7 @@
             font-size: 1rem;
             border: none;
             cursor: pointer;
-            min-height: 44px;
+            min-height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
